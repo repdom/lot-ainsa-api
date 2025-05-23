@@ -1,0 +1,87 @@
+package service
+
+import (
+	"be-lotsanmateo-api/internal/adapter/externalapi"
+	modelApi "be-lotsanmateo-api/internal/adapter/externalapi/model"
+	"be-lotsanmateo-api/internal/config"
+	"be-lotsanmateo-api/internal/domain/model"
+	"be-lotsanmateo-api/internal/domain/port"
+	"fmt"
+	"log"
+	"strings"
+)
+
+type customerOnboardingService struct {
+	customerApi *externalapi.CustomerAPI
+}
+
+func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, customerOnboarding model.RequestCustomerOnboarding) (error, error) {
+	log.Println("Create customer")
+	badRequest, internalServer := c.customerApi.ExistCustomer(jwt, user, lang, customerOnboarding.DocumentNumber, customerOnboarding.DocumentType)
+	log.Println(internalServer, badRequest)
+	if internalServer != nil || badRequest != nil {
+		return badRequest, internalServer
+	}
+
+	document := modelApi.Document{}
+
+	switch strings.ToUpper(customerOnboarding.DocumentType) {
+	case "DUI":
+		document.DUI = customerOnboarding.DocumentNumber
+		break
+	case "NIT":
+		document.NIT = customerOnboarding.DocumentNumber
+		break
+	case "PASAPORTE":
+		document.Passport = customerOnboarding.DocumentNumber
+		break
+	default:
+		return nil, fmt.Errorf("el tipo de documento no es valido")
+	}
+
+	customerPep := modelApi.Pep{}
+	if customerOnboarding.DetailsPep != "" {
+		customerPep.Pep = true
+		customerPep.Details = customerOnboarding.DetailsPep
+	}
+
+	customer := modelApi.Customer{
+		FirstName:          customerOnboarding.Names,
+		LastName:           customerOnboarding.Lastnames,
+		Nationality:        customerOnboarding.Nationality,
+		Document:           document,
+		Gender:             modelApi.Gender{Gender: customerOnboarding.Gender},
+		CivilStatus:        modelApi.CivilStatus{CivilStatus: customerOnboarding.MaritalStatus},
+		ResidentialAddress: customerOnboarding.Address,
+		Birthday:           customerOnboarding.BirthDate,
+		City:               customerOnboarding.City,
+		Email:              customerOnboarding.Email,
+		PhoneNumber:        customerOnboarding.Phone,
+		Pep:                customerPep,
+		ZipCode:            customerOnboarding.PostalCode,
+		Financial: modelApi.Financial{
+			Position:             customerOnboarding.Position,
+			EmployerName:         customerOnboarding.Employer,
+			EstimatedIncomeRange: customerOnboarding.RangeIncome,
+			IncomeSource:         customerOnboarding.SourceOfIncome,
+			Occupation:           customerOnboarding.Occupation,
+			MainPurpose:          customerOnboarding.RelationFinancial,
+		},
+	}
+
+	badRequest, internalServer = c.customerApi.CreateCustomer(jwt, user, lang, customer)
+	log.Println(internalServer, "|", badRequest)
+	if internalServer != nil || badRequest != nil {
+		return badRequest, internalServer
+	}
+
+	return nil, nil
+}
+
+func NewCustomerOnboardingService(env *config.Env) port.CustomerOnboardingService {
+	baseURL := env.GetEnv("CUSTOMER_API_URL", "http://localhost:8080")
+	customerApi := externalapi.NewCustomerClient(baseURL)
+	return &customerOnboardingService{
+		customerApi: customerApi,
+	}
+}
