@@ -1,6 +1,11 @@
 FROM golang:1.23 AS builder
 
 WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
 COPY . .
 
 RUN go build -o belsmapi ./cmd/be-lotsanmateo-api/
@@ -11,7 +16,7 @@ WORKDIR /app
 
 COPY --from=builder /app/belsmapi .
 
-ENV PORT=":8082"
+ENV PORT=8080
 ARG PORT=$PORT
 
 EXPOSE 8080
