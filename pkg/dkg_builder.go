@@ -8,6 +8,10 @@ import (
 
 func NewCustomerHandler(env *config.Env) *api.CustomerOnboardingHandler {
 	servicePort := service.NewCustomerOnboardingService(env)
-	customer := api.NewCustomerOnboardingHandler(servicePort)
-	return customer
+	return api.NewCustomerOnboardingHandler(servicePort)
+}
+
+func NewPaymentPlanHandler(env *config.Env) *api.PaymentPlanSimulationHandler {
+	servicePort := service.NewCalculatePlan(env)
+	return api.NewPaymentSimulationHandler(servicePort)
 }

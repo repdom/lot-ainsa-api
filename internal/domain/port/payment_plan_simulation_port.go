@@ -2,10 +2,6 @@ package port
 
 import "be-lotsanmateo-api/internal/domain/model"
 
-type PdfGenerator interface {
-	Generate(data model.ResponseLoan) ([]byte, error)
-}
-
 type ReportSimulationService interface {
 	GenerateReport(idLot int) ([]byte, error)
 }
@@ -15,5 +11,7 @@ type ReportService interface {
 }
 
 type ApiService interface {
-	GenerateReport(idLot int) (model.ResponseLoan, error)
+	Generate(idFinancial string) (*model.ResponseLoan, error)
+
+	GenerateSimulation(request model.RequestLoan) (*model.ResponseLoan, error)
 }

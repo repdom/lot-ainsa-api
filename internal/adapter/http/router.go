@@ -17,11 +17,12 @@ func NewRouter(env *config.Env) *gin.Engine {
 	test := api.NewTestHandler()
 
 	customer := pkg.NewCustomerHandler(env)
+	paymentPlan := pkg.NewPaymentPlanHandler(env)
 
 	apiRest := r.Group("/api")
 	{
 		apiRest.GET("/test", test.TestHandler)
-		apiRest.GET("/payment/plan/simulation")
+		apiRest.POST("/payment/plan/simulation", paymentPlan.HandleRequest)
 		apiRest.POST("/v1/customer-onboarding", customer.CreateCustomer)
 	}
 
