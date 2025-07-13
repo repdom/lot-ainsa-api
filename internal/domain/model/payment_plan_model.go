@@ -10,6 +10,10 @@ type ResponseLoan struct {
 	PremiumRate          float64          `json:"premiumRate"`
 	Premium              float64          `json:"premium"`
 	FeeSimulation        []FreeSimulation `json:"feeSimulation"`
+	Rate                 float64
+	Years                float64
+	Amount               float64
+	DownPaymentRate      float64
 }
 
 type FreeSimulation struct {

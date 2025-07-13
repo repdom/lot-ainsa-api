@@ -17,7 +17,7 @@ func NewRouter(env *config.Env) *gin.Engine {
 	test := api.NewTestHandler()
 
 	customer := pkg.NewCustomerHandler(env)
-	paymentPlan := pkg.NewPaymentPlanHandler(env)
+	paymentPlan := pkg.NewPaymentPlanHandler()
 
 	apiRest := r.Group("/api")
 	{
@@ -26,9 +26,10 @@ func NewRouter(env *config.Env) *gin.Engine {
 		apiRest.POST("/v1/customer-onboarding", customer.CreateCustomer)
 	}
 
+	paymentPlanPdf := pkg.NewCalculatePlanPdfHandler(env)
 	pdfReport := r.Group("/pdf")
 	{
-		pdfReport.GET("/payment/plan/simulation")
+		pdfReport.GET("/payment/plan/simulation", paymentPlanPdf.GeneratePDF)
 	}
 
 	return r

@@ -8,10 +8,10 @@ import (
 )
 
 type PaymentPlanSimulationDocumentHandler struct {
-	service port.ReportSimulationService
+	service port.ReportService
 }
 
-func NewPaymentPlanSimulationDocumentHandler(service port.ReportSimulationService) *PaymentPlanSimulationDocumentHandler {
+func NewPaymentPlanSimulationDocumentHandler(service port.ReportService) *PaymentPlanSimulationDocumentHandler {
 	return &PaymentPlanSimulationDocumentHandler{service: service}
 }
 
@@ -28,7 +28,7 @@ func (handler *PaymentPlanSimulationDocumentHandler) GeneratePDF(c *gin.Context)
 
 	boolValue, err := strconv.ParseBool(view)
 	val := ""
-	if boolValue {
+	if !boolValue {
 		val += "attachment;"
 	} else {
 		val += "inline;"
