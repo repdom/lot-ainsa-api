@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -17,7 +18,7 @@ type API struct {
 	baseURL url.URL
 }
 
-func (api *API) LoadFinancing(jwt, user, lang, financingId string) (*financing.Financings, error) {
+func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financing.Financings, error) {
 	log.Println("Load financing")
 	change := url.URL{
 		Scheme: api.baseURL.Scheme,
@@ -25,7 +26,7 @@ func (api *API) LoadFinancing(jwt, user, lang, financingId string) (*financing.F
 		Path:   api.baseURL.Path,
 	}
 	params := change.Query()
-	params.Add("id", financingId)
+	params.Add("id", strconv.Itoa(financingId))
 	change.RawQuery = params.Encode()
 	log.Println(change.String())
 

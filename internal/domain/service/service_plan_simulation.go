@@ -1,36 +1,22 @@
 package service
 
 import (
-	"be-lotsanmateo-api/internal/adapter/externalapi/financing"
-	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/model"
 	"be-lotsanmateo-api/internal/domain/port"
-	"log"
 	"math"
 	"time"
 )
 
 type CalculatePlan struct {
-	api *financing.API
-}
-
-func (c CalculatePlan) Generate(idFinancial string) (*model.ResponseLoan, error) {
-	loadFinancing, err := c.api.LoadFinancing("", "", "", idFinancial)
-	if err != nil {
-		return nil, err
-	}
-	request := model.RequestLoan{}
-	request.Rate = loadFinancing.InterestRate
-	request.Amount = loadFinancing.Amount
-	request.Months = loadFinancing.TotalTerm
-	request.Premium = loadFinancing.Amount - loadFinancing.FinancingAmount
-	request.Payday = loadFinancing.StartDate.Day()
-	return c.GenerateSimulation(request)
-
 }
 
 func (c CalculatePlan) GenerateSimulation(request model.RequestLoan) (*model.ResponseLoan, error) {
 	response := model.ResponseLoan{}
+	response.DownPaymentRate = request.Premium
+	response.Rate = request.Rate
+
+	response.Years = float64(request.Months / 12)
+	response.Amount = request.Amount
 
 	n := float64(request.Months)
 	p := request.Amount
@@ -66,7 +52,6 @@ func (c CalculatePlan) GenerateSimulation(request model.RequestLoan) (*model.Res
 	payment := (p * rateMonths) / (1 - math.Pow(1+rateMonths, -n))
 	paymentR := roundToTwoDecimals(payment)
 	response.MonthlyPayment = paymentR
-	log.Printf("paymentR = %f\n", (payment*n)-p)
 	interestTotal := roundToTwoDecimals((payment * n) - p)
 	response.InterestsTotal = interestTotal
 	response.TotalPayments = roundToTwoDecimals(interestTotal + p + pm)
@@ -115,15 +100,11 @@ func roundToTwoDecimals(value float64) float64 {
 	} else {
 		round = math.Floor(value*100) / 100
 	}
-	log.Printf("roundToTwoDecimals(%f) \n", value)
-	log.Println("round = ", round)
+	//	log.Printf("roundToTwoDecimals(%f) \n", value)
+	//	log.Println("round = ", round)
 	return round
 }
 
-func NewCalculatePlan(env *config.Env) port.ApiService {
-	baseURL := env.GetEnv("CUSTOMER_API_URL", "http://localhost:8080")
-	api := financing.NewFinancingAPI(baseURL)
-	return &CalculatePlan{
-		api: api,
-	}
+func NewCalculatePlan() port.ApiService {
+	return &CalculatePlan{}
 }

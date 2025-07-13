@@ -2,6 +2,7 @@ package pdf
 
 import (
 	"be-lotsanmateo-api/internal/domain/port"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -17,25 +18,18 @@ func NewPaymentPlanDocumentHandler(service port.ReportService) *PaymentPlanDocum
 
 func (handler *PaymentPlanDocumentHandler) GeneratePDF(c *gin.Context) {
 
-	lotIdRequest := c.Query("lotId")
-	customerIdRequest := c.Query("customerId")
+	financingIdQuery := c.Query("financingId")
 	view := c.Query("view")
 
-	lotId, err := strconv.Atoi(lotIdRequest)
+	financingId, err := strconv.Atoi(financingIdQuery)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "lotId not valid"})
-		return
-	}
-
-	customerId, err := strconv.Atoi(customerIdRequest)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "lotId not valid"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "financingId not valid"})
 		return
 	}
 
 	boolValue, err := strconv.ParseBool(view)
 	val := ""
-	if boolValue {
+	if !boolValue {
 		val += "attachment;"
 	} else {
 		val += "inline;"
@@ -43,10 +37,10 @@ func (handler *PaymentPlanDocumentHandler) GeneratePDF(c *gin.Context) {
 
 	val += "filename=plan_de_pago.pdf"
 
-	pdfData, err := handler.service.GenerateReport(lotId, customerId)
+	pdfData, err := handler.service.GenerateReport(financingId)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al generar PDF"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error al generar PDF: %s", err.Error())})
 		return
 	}
 
