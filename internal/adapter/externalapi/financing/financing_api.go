@@ -32,7 +32,7 @@ func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financi
 
 	req, err := http.NewRequest("GET", change.String(), nil)
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 
@@ -51,7 +51,7 @@ func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financi
 
 	resp, err := api.client.Do(req)
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 		return nil, fmt.Errorf("error making request: %w", err)
 	}
 
@@ -64,7 +64,7 @@ func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financi
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 		return nil, fmt.Errorf("error reading response: %w", err)
 
 	}
@@ -72,6 +72,7 @@ func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financi
 	var result financing.Financings
 	err = json.Unmarshal(body, &result)
 	if err != nil {
+		log.Println(err.Error())
 		return nil, fmt.Errorf("error reading response: %w", err)
 	}
 	return &result, nil

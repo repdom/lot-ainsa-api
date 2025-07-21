@@ -21,3 +21,8 @@ func NewCalculatePlanPdfHandler(env *config.Env) *pdf.PaymentPlanDocumentHandler
 	servicePort := service.NewCalculatePlanPDF(env)
 	return pdf.NewPaymentPlanDocumentHandler(servicePort)
 }
+
+func NewPagareHandler(env *config.Env) *pdf.PagareHandler {
+	pagare := service.NewPagarePDF(env)
+	return pdf.NewPagareHandler(pagare)
+}

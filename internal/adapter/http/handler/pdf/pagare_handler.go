@@ -1,7 +1,7 @@
 package pdf
 
 import (
-	"be-lotsanmateo-api/internal/adapter/report/pdf"
+	"be-lotsanmateo-api/internal/domain/port"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -10,12 +10,12 @@ import (
 )
 
 type PagareHandler struct {
-	pagare pdf.GeneratePagarePDF
+	pagare port.PagareService
 }
 
-func NewPagareHandler() *PagareHandler {
+func NewPagareHandler(pagare port.PagareService) *PagareHandler {
 	return &PagareHandler{
-		pagare: pdf.NewPagarePDF(),
+		pagare: pagare,
 	}
 }
 
@@ -39,14 +39,9 @@ func (handler *PagareHandler) GeneratePDF(c *gin.Context) {
 		val += "inline;"
 	}
 
-	val += "filename=plan_de_pago.pdf"
+	val += "filename=pagare.pdf"
 
-	data := pdf.PagareData{}
-
-	data.Area = "200"
-	data.Address = "Calle 123 # 123"
-
-	pdfData, err := handler.pagare.GenerateReport(data)
+	pdfData, err := handler.pagare.GenerateReport(financingId)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error al generar PDF: %s", err.Error())})

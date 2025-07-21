@@ -37,7 +37,7 @@ func (p PagarePDF) GenerateReport(financingId int) ([]byte, error) {
 		years--
 	}
 
-	data.NoteCode = "sm001321"
+	data.NoteCode = fmt.Sprintf("%09f", loadFinancing.ID)
 	data.ClientName = fmt.Sprintf("%s %s", loadFinancing.Customer.Names, loadFinancing.Customer.LastNames)
 	data.IdentityDocument = loadFinancing.Customer.Document.DUI // loadFinancing.Customer.Document.Passport || loadFinancing.Customer.Document.NIT
 	data.ClientAge = years
@@ -45,7 +45,12 @@ func (p PagarePDF) GenerateReport(financingId int) ([]byte, error) {
 	data.LotNumber = loadFinancing.Lot.Number
 	data.Address = loadFinancing.Customer.ResidentialAddress
 	data.Block = loadFinancing.Lot.Polygon
-	data.TermInYears = loadFinancing.TotalTerm / 12
+
+	var termInYears = loadFinancing.TotalTerm / 12
+
+	log.Printf("years term: %d", termInYears)
+
+	data.TermInYears = termInYears
 	data.InstallmentCount = loadFinancing.TotalTerm
 	data.DateNow = fechaActual.Format("02/01/2006")
 	data.InterestRate = fmt.Sprintf("%.2f", loadFinancing.InterestRate)
@@ -55,7 +60,10 @@ func (p PagarePDF) GenerateReport(financingId int) ([]byte, error) {
 	data.DownPayment = formatAmount(loadFinancing.DownPaymentAmount)
 	data.LotCost = formatAmount(loadFinancing.Lot.Price)
 	data.Profession = loadFinancing.Customer.Financial.Occupation
-	data.FirstPaymentDate = loadFinancing.StartDate.AddDate(0, 1, 0).Format("02/01/2006")
+
+	t, _ := time.Parse("2006-01-02", loadFinancing.StartDate)
+
+	data.FirstPaymentDate = t.AddDate(0, 1, 0).Format("02/01/2006")
 	data.AmountToFinanceInWords = ""
 	data.LotCostInWords = ""
 	data.DownPaymentInWords = ""
