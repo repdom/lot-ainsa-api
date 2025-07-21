@@ -2,6 +2,10 @@ package port
 
 import "be-lotsanmateo-api/internal/domain/model"
 
+type PagareService interface {
+	GenerateReport(financingId int) ([]byte, error)
+}
+
 type ReportService interface {
 	GenerateReport(financingId int) ([]byte, error)
 }

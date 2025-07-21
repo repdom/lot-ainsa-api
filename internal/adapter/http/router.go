@@ -2,6 +2,7 @@ package http
 
 import (
 	"be-lotsanmateo-api/internal/adapter/http/handler/api"
+	"be-lotsanmateo-api/internal/adapter/http/handler/pdf"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/pkg"
 	"github.com/gin-contrib/cors"
@@ -27,9 +28,11 @@ func NewRouter(env *config.Env) *gin.Engine {
 	}
 
 	paymentPlanPdf := pkg.NewCalculatePlanPdfHandler(env)
+	pagareHandler := pdf.NewPagareHandler()
 	pdfReport := r.Group("/pdf")
 	{
 		pdfReport.GET("/payment/plan/simulation", paymentPlanPdf.GeneratePDF)
+		pdfReport.GET("/pagare", pagareHandler.GeneratePDF)
 	}
 
 	return r

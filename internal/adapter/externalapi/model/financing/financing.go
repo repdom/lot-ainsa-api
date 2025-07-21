@@ -19,7 +19,7 @@ type Financings struct {
 	TotalTerm           int           `json:"totalTerm,omitempty"`
 	TermElapsed         *int          `json:"termElapsed,omitempty"`
 	MissingTerm         *int          `json:"missingTerm,omitempty"`
-	MonthlyPayment      *float64      `json:"monthlyPayment,omitempty"`
+	MonthlyPayment      float64       `json:"monthlyPayment,omitempty"`
 	Status              string        `json:"status"`
 	StartDate           *time.Time    `json:"startDate,omitempty"`
 	DownPayment         []DownPayment `json:"downPayment"`

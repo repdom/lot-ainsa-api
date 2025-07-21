@@ -18,6 +18,7 @@ type PaymentPlanPDF struct {
 func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 	loadFinancing, err := p.api.LoadFinancing("", "", "", financingId)
 	if err != nil {
+		log.Println(err.Error())
 		return nil, err
 	}
 	request := model.RequestLoan{}
