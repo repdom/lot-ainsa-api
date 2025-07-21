@@ -27,9 +27,11 @@ func NewRouter(env *config.Env) *gin.Engine {
 	}
 
 	paymentPlanPdf := pkg.NewCalculatePlanPdfHandler(env)
+	pagareHandler := pkg.NewPagareHandler(env)
 	pdfReport := r.Group("/pdf")
 	{
 		pdfReport.GET("/payment/plan/simulation", paymentPlanPdf.GeneratePDF)
+		pdfReport.GET("/pagare", pagareHandler.GeneratePDF)
 	}
 
 	return r

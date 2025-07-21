@@ -18,6 +18,7 @@ type PaymentPlanPDF struct {
 func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 	loadFinancing, err := p.api.LoadFinancing("", "", "", financingId)
 	if err != nil {
+		log.Println(err.Error())
 		return nil, err
 	}
 	request := model.RequestLoan{}
@@ -30,8 +31,9 @@ func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 		request.Months = loadFinancing.TotalTerm
 	}
 	request.Premium = loadFinancing.DownPaymentRate
-	if loadFinancing.StartDate != nil {
-		request.Payday = loadFinancing.StartDate.Day()
+	if loadFinancing.StartDate != "" {
+		t, _ := time.Parse("2006-01-02", loadFinancing.StartDate)
+		request.Payday = t.Day()
 	} else {
 		request.Payday = time.Now().Day()
 	}
@@ -45,8 +47,9 @@ func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 
 	var paymentPlan pdf.PaymentPlan
 	paymentPlan.Loan = *land
-	if loadFinancing.StartDate != nil {
-		paymentPlan.StartDate = loadFinancing.StartDate.Format("02/01/2006")
+	if loadFinancing.StartDate != "" {
+		t, _ := time.Parse("2006-01-02", loadFinancing.StartDate)
+		paymentPlan.StartDate = t.Format("02/01/2006")
 	} else {
 		paymentPlan.StartDate = time.Now().Format("02/01/2006")
 	}

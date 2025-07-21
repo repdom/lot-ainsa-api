@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base href="file:///app/docs/">
+    <meta charset="UTF-8">
+    <title>Pagaré</title>
+    <style>
+        body {
+            font-family: "Arial", serif;
+            font-size: large;
+            text-align: justify;
+            line-height: 1.8;
+        }
+
+        h2 {
+            text-align: center;
+            text-decoration: underline;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            height: 80px;
+        }
+
+        .firmas {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .firmas div {
+            width: 60%;
+            text-align: center;
+            align-content: center;
+            align-items: center;
+        }
+
+        .firma-linea {
+            margin-left: 80px;
+            margin-bottom: 20px;
+            border-top: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <img src="assets/images/lot_name-rbg.png" alt="Logo Izquierdo">
+    <img src="assets/images/name.png" alt="Logo Derecho">
+</div>
+
+<h2>PAGARÉ</h2>
+<p class="center"><strong>PAGARÉ No. {{.NoteCode}} - LOTE {{.LotNumber}} - POLÍGONO {{.Block}}</strong>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{{.Area}}m²</strong>
+</p>
+
+<p>
+    Nosotros, <strong>Luis Rene Quinteros Diaz</strong>, quien es de cuarenta y dos años de edad, Comerciante, del
+    domicilio del Distrito de San Gerardo, San Miguel Norte, Departamento de San Miguel, persona a quien conozco e
+    identifico por medio de su Documento Único de Identidad número: 02832132-3, que en el transcurso de este documento
+    se le llamará <strong>“ACREEDOR”</strong>; y <strong>{{.ClientName}}</strong>, quien es de {{.ClientAge}} años de
+    edad, {{.Profession}}, del domicilio de {{.Address}}, persona a quien identifico
+    por su Documento Único de Identidad número: {{.IdentityDocument}}, que en el transcurso del mismo se le llamará
+    <strong>“DEUDOR”</strong>, en el Barrio El Centro, Distrito de Lolotique, San Miguel Oeste, Departamento de San
+    Miguel, {{.DateNow}}, por medio del presente documento otorgamos este
+    PAGARÉ; en concepto de financiamiento del 95% por compra de LOTE "{{.LotNumber}}" perteneciente al Polígono "{{.Block}}" de SAN MATEO
+    URBANIZACIÓN, por el valor de <strong>${{.LotCost}}</strong> ({{.LotCostInWords}}), abonando
+    la cantidad de <strong>${{.DownPayment}}</strong> ({{.DownPaymentInWords}}) en concepto de
+    prima del {{.DownPaymentPercentage}}%, quedando con una
+    deuda de <strong>${{.AmountToFinance}}</strong> ({{.AmountToFinanceInWords}}), por un plazo de {{.TermInYears}} años
+    compuesto en {{.InstallmentCount}} cuotas mensuales con una tasa de interés del {{.InterestRate}}% y moratorio del 5%. Los pagos pueden ser
+    realizados en efectivo, transferencias nacionales o internacionales y serán amparados con recibos de ingresos
+    otorgados por el acreedor.
+</p>
+
+<h2>Declaro:</h2>
+<br/>
+<h3>I. OBJETO:</h3>
+<p>
+    Que por virtud del presente título valor pagaré incondicionalmente a la orden de <strong>Luis Rene Quinteros
+    Diaz</strong>, con Documento Único de Identidad número: cero dos ocho tres dos uno tres dos guion tres, en la ciudad y dirección indicadas, y en las
+    fechas de amortización por cuotas señaladas en la cláusula TERCERA de este pagaré, la suma de
+    <strong>${{.AmountToFinance}}</strong>, más los intereses señalados en la cláusula SEGUNDA.
+</p>
+
+<h3>II. INTERESES:</h3>
+<p>
+    Que sobre la suma debida se reconocerán intereses corrientes a una tasa preferencial del <strong>{{.InterestRate}}%</strong> y
+    moratorios del <strong>5%</strong>.
+</p>
+
+<h3>III. PLAZO:</h3>
+<p>
+    Que pagaré el capital indicado en la cláusula primera mediante <strong>{{.InstallmentCount}} cuotas iguales, mensuales y
+    sucesivas</strong>, mediante pagos en efectivo o transferencias a la cuenta corriente No.
+    <strong>100-270-700349-5</strong> del Banco de Fomento Agropecuario, amparados con recibos de ingreso otorgados por
+    el acreedor. Cada cuota será de <strong>${{.InstallmentAmount}}</strong>. La primera cuota se cancelará el día
+    <strong>{{.FirstPaymentDate}}</strong> y luego cada mes hasta completar el pago.
+</p>
+
+<p>
+    En constancia de lo anterior, se suscribe este documento en el Distrito de Lolotique, San Miguel Oeste, Departamento
+    de San Miguel, {{.DateNow}}.
+</p>
+
+<div class="firmas">
+    <div>
+        <div class="firma-linea"></div>
+        <strong>ACREEDOR</strong><br>
+        Luis Rene Quinteros Diaz
+    </div>
+    <div>
+        <div class="firma-linea"></div>
+        <strong>DEUDOR</strong><br>
+        {{.ClientName}}
+    </div>
+</div>
+
+</body>
+</html>
