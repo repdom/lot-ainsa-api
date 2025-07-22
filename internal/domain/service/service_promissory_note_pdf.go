@@ -11,12 +11,12 @@ import (
 	"time"
 )
 
-type PagarePDF struct {
+type PromissoryNotePDF struct {
 	api               *financing.API
 	generatePagarePDF pdf.GeneratePagarePDF
 }
 
-func (p PagarePDF) GenerateReport(financingId int) ([]byte, error) {
+func (p PromissoryNotePDF) GenerateReport(financingId int) ([]byte, error) {
 	loadFinancing, err := p.api.LoadFinancing("", "", "", financingId)
 	if err != nil {
 		log.Println(err.Error())
@@ -104,11 +104,11 @@ func reverseString(s string) string {
 	return string(runes)
 }
 
-func NewPagarePDF(env *config.Env) port.PagareService {
+func NewPromissoryNotePDF(env *config.Env) port.PromissoryNoteService {
 	baseURL := env.GetEnv("CUSTOMER_API_URL", "https://lot-db.rca-dev.com/")
 	api := financing.NewFinancingAPI(baseURL)
 	pagarePDF := pdf.NewGeneratePagarePDF()
-	return &PagarePDF{
+	return &PromissoryNotePDF{
 		api:               api,
 		generatePagarePDF: pagarePDF,
 	}

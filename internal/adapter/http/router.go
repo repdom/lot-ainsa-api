@@ -18,20 +18,24 @@ func NewRouter(env *config.Env) *gin.Engine {
 
 	customer := pkg.NewCustomerHandler(env)
 	paymentPlan := pkg.NewPaymentPlanHandler()
+	loanPaymentHandler := pkg.NewLoanPaymentHandler(env)
 
 	apiRest := r.Group("/api")
 	{
 		apiRest.GET("/test", test.TestHandler)
 		apiRest.POST("/payment/plan/simulation", paymentPlan.HandleRequest)
+		apiRest.POST("/v1/loan", customer.CreateCustomer)
+		apiRest.GET("/v1/loan/payment", loanPaymentHandler.HandleRequest)
 		apiRest.POST("/v1/customer-onboarding", customer.CreateCustomer)
 	}
 
 	paymentPlanPdf := pkg.NewCalculatePlanPdfHandler(env)
-	pagareHandler := pkg.NewPagareHandler(env)
+	promissoryNoteHandler := pkg.NewPromissoryNoteHandler(env)
 	pdfReport := r.Group("/pdf")
 	{
 		pdfReport.GET("/payment/plan/simulation", paymentPlanPdf.GeneratePDF)
-		pdfReport.GET("/pagare", pagareHandler.GeneratePDF)
+		pdfReport.GET("/promissory/note", promissoryNoteHandler.GeneratePDF)
+
 	}
 
 	return r

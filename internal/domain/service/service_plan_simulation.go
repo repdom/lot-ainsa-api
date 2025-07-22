@@ -1,6 +1,7 @@
 package service
 
 import (
+	"be-lotsanmateo-api/internal/domain"
 	"be-lotsanmateo-api/internal/domain/model"
 	"be-lotsanmateo-api/internal/domain/port"
 	"math"
@@ -33,12 +34,12 @@ func (c CalculatePlan) GenerateSimulation(request model.RequestLoan) (*model.Res
 
 	if request.Rate == 0 {
 		payment := p / n
-		response.MonthlyPayment = roundToTwoDecimals(payment)
+		response.MonthlyPayment = domain.RoundToTwoDecimals(payment)
 		rateMont := 0.0
-		response.RateMonths = roundToTwoDecimals(rateMont)
+		response.RateMonths = domain.RoundToTwoDecimals(rateMont)
 		response.NumberOfInstallments = request.Months
 		response.InterestsTotal = 0
-		response.TotalPayments = roundToTwoDecimals(request.Amount + pm)
+		response.TotalPayments = domain.RoundToTwoDecimals(request.Amount + pm)
 		response.FeeSimulation = FeeSimulationCalculate(request.Months, payment, 0.0, p, request)
 		return &response, nil
 	}
@@ -46,15 +47,15 @@ func (c CalculatePlan) GenerateSimulation(request model.RequestLoan) (*model.Res
 	rateMonths := (request.Rate / 100) / 12
 
 	rateMont := request.Rate / 12
-	response.RateMonths = roundToTwoDecimals(rateMont)
+	response.RateMonths = domain.RoundToTwoDecimals(rateMont)
 	response.NumberOfInstallments = request.Months
 
 	payment := (p * rateMonths) / (1 - math.Pow(1+rateMonths, -n))
-	paymentR := roundToTwoDecimals(payment)
+	paymentR := domain.RoundToTwoDecimals(payment)
 	response.MonthlyPayment = paymentR
-	interestTotal := roundToTwoDecimals((payment * n) - p)
+	interestTotal := domain.RoundToTwoDecimals((payment * n) - p)
 	response.InterestsTotal = interestTotal
-	response.TotalPayments = roundToTwoDecimals(interestTotal + p + pm)
+	response.TotalPayments = domain.RoundToTwoDecimals(interestTotal + p + pm)
 	response.FeeSimulation = FeeSimulationCalculate(request.Months, payment, rateMonths, p, request)
 
 	return &response, nil
@@ -78,31 +79,19 @@ func FeeSimulationCalculate(Months int, payment float64, rateMonths, p float64, 
 
 		var feeSimulation model.FreeSimulation
 		feeSimulation.Payday = paymentDate.Format("02/01/2006")
-		feeSimulation.BalanceStart = roundToTwoDecimals(balance)
+		feeSimulation.BalanceStart = domain.RoundToTwoDecimals(balance)
 		interest := balance * rateMonths
 		principal := payment - interest
 		balance = balance - principal
-		feeSimulation.Amount = roundToTwoDecimals(payment)
-		feeSimulation.BalanceLast = roundToTwoDecimals(balance)
-		feeSimulation.Capital = roundToTwoDecimals(principal)
-		feeSimulation.Interest = roundToTwoDecimals(interest)
+		feeSimulation.Amount = domain.RoundToTwoDecimals(payment)
+		feeSimulation.BalanceLast = domain.RoundToTwoDecimals(balance)
+		feeSimulation.Capital = domain.RoundToTwoDecimals(principal)
+		feeSimulation.Interest = domain.RoundToTwoDecimals(interest)
 
 		feeSimulations = append(feeSimulations, feeSimulation)
 	}
 
 	return feeSimulations
-}
-
-func roundToTwoDecimals(value float64) float64 {
-	var round float64
-	if ((value * 100) - math.Floor(value*100)) >= 0.5 {
-		round = math.Ceil(value*100) / 100
-	} else {
-		round = math.Floor(value*100) / 100
-	}
-	//	log.Printf("roundToTwoDecimals(%f) \n", value)
-	//	log.Println("round = ", round)
-	return round
 }
 
 func NewCalculatePlan() port.ApiService {

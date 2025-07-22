@@ -9,17 +9,17 @@ import (
 	"strconv"
 )
 
-type PagareHandler struct {
-	pagare port.PagareService
+type PromissoryNoteHandler struct {
+	promissoryNote port.PromissoryNoteService
 }
 
-func NewPagareHandler(pagare port.PagareService) *PagareHandler {
-	return &PagareHandler{
-		pagare: pagare,
+func NewPromissoryNoteHandler(promissoryNote port.PromissoryNoteService) *PromissoryNoteHandler {
+	return &PromissoryNoteHandler{
+		promissoryNote: promissoryNote,
 	}
 }
 
-func (handler *PagareHandler) GeneratePDF(c *gin.Context) {
+func (handler *PromissoryNoteHandler) GeneratePDF(c *gin.Context) {
 
 	financingIdQuery := c.Query("financingId")
 	view := c.Query("view")
@@ -41,7 +41,7 @@ func (handler *PagareHandler) GeneratePDF(c *gin.Context) {
 
 	val += "filename=pagare.pdf"
 
-	pdfData, err := handler.pagare.GenerateReport(financingId)
+	pdfData, err := handler.promissoryNote.GenerateReport(financingId)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error al generar PDF: %s", err.Error())})
