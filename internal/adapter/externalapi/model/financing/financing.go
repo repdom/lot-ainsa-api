@@ -1,5 +1,18 @@
 package financing
 
+import "time"
+
+type Payment struct {
+	ID               int       `json:"id"`
+	Financing        string    `json:"financing"`
+	PaymentDate      time.Time `json:"paymentDate"`
+	Amount           float64   `json:"amount"`
+	Principal        float64   `json:"principal"`
+	Interest         float64   `json:"interest"`
+	StartingBalance  float64   `json:"startingBalance"`
+	RemainingBalance float64   `json:"remainingBalance"`
+}
+
 type Financings struct {
 	ID                  float64       `json:"id"`
 	Customer            Customer      `json:"customer"`
@@ -11,9 +24,9 @@ type Financings struct {
 	DownPaymentPending  float64       `json:"downPaymentPending"`
 	DownPaymentBalance  float64       `json:"downPaymentBalance"`
 	FinancingAmount     float64       `json:"financingAmount"`
-	Balance             *float64      `json:"balance,omitempty"`
+	Balance             float64       `json:"balance,omitempty"`
 	InterestRate        float64       `json:"interestRate"`
-	InterestRateMonthly *float64      `json:"interestRateMonthly,omitempty"`
+	InterestRateMonthly float64       `json:"interestRateMonthly,omitempty"`
 	TotalTerm           int           `json:"totalTerm,omitempty"`
 	TermElapsed         int           `json:"termElapsed,omitempty"`
 	MissingTerm         *int          `json:"missingTerm,omitempty"`
@@ -21,6 +34,7 @@ type Financings struct {
 	Status              string        `json:"status"`
 	StartDate           string        `json:"startDate,omitempty"`
 	DownPayment         []DownPayment `json:"downPayment"`
+	Payments            []Payment     `json:"payments"`
 }
 
 type Customer struct {

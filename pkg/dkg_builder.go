@@ -22,7 +22,12 @@ func NewCalculatePlanPdfHandler(env *config.Env) *pdf.PaymentPlanDocumentHandler
 	return pdf.NewPaymentPlanDocumentHandler(servicePort)
 }
 
-func NewPagareHandler(env *config.Env) *pdf.PagareHandler {
-	pagare := service.NewPagarePDF(env)
-	return pdf.NewPagareHandler(pagare)
+func NewPromissoryNoteHandler(env *config.Env) *pdf.PromissoryNoteHandler {
+	promissoryNote := service.NewPromissoryNotePDF(env)
+	return pdf.NewPromissoryNoteHandler(promissoryNote)
+}
+
+func NewLoanPaymentHandler(env *config.Env) *api.LoanPaymentHandler {
+	loanPayment := service.NewLoanPaymentService(env)
+	return api.NewLoanPaymentHandler(loanPayment)
 }
