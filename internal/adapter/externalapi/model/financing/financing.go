@@ -24,12 +24,12 @@ type Financings struct {
 	DownPaymentPending  float64       `json:"downPaymentPending"`
 	DownPaymentBalance  float64       `json:"downPaymentBalance"`
 	FinancingAmount     float64       `json:"financingAmount"`
-	Balance             float64       `json:"balance,omitempty"`
+	Balance             float64       `json:"balance"`
 	InterestRate        float64       `json:"interestRate"`
 	InterestRateMonthly float64       `json:"interestRateMonthly,omitempty"`
 	TotalTerm           int           `json:"totalTerm,omitempty"`
-	TermElapsed         int           `json:"termElapsed,omitempty"`
-	MissingTerm         *int          `json:"missingTerm,omitempty"`
+	TermElapsed         int           `json:"termElapsed"`
+	MissingTerm         int           `json:"missingTerm,omitempty"`
 	MonthlyPayment      float64       `json:"monthlyPayment,omitempty"`
 	Status              string        `json:"status"`
 	StartDate           string        `json:"startDate,omitempty"`
