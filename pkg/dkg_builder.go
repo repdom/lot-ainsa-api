@@ -31,3 +31,8 @@ func NewLoanPaymentHandler(env *config.Env) *api.LoanPaymentHandler {
 	loanPayment := service.NewLoanPaymentService(env)
 	return api.NewLoanPaymentHandler(loanPayment)
 }
+
+func NewFinancingHandler(env *config.Env) *api.FinancingsActiveHandler {
+	activated := service.NewServiceFinancingsActions(env)
+	return api.NewFinancingHandler(activated)
+}

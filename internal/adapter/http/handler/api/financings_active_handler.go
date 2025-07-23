@@ -1,6 +1,7 @@
 package api
 
 import (
+	"be-lotsanmateo-api/internal/domain/model"
 	"be-lotsanmateo-api/internal/domain/port"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -8,17 +9,13 @@ import (
 	"strconv"
 )
 
-type LoanPaymentHandler struct {
-	loanPayment port.LoanPaymentService
+type FinancingsActiveHandler struct {
+	services port.FinancingsActionService
 }
 
-func NewLoanPaymentHandler(loanPayment port.LoanPaymentService) *LoanPaymentHandler {
-	return &LoanPaymentHandler{
-		loanPayment: loanPayment,
-	}
-}
+func (handler *FinancingsActiveHandler) HandleRequest(c *gin.Context) {
 
-func (handler *LoanPaymentHandler) HandleRequest(c *gin.Context) {
+	var loan model.RequestLoan
 
 	financingIdQuery := c.Query("financingId")
 
@@ -28,15 +25,9 @@ func (handler *LoanPaymentHandler) HandleRequest(c *gin.Context) {
 		return
 	}
 
-	share := c.Query("share")
-	var shareAmount float64
-	if share != "" {
-		shareAmount, err = strconv.ParseFloat(share, 64)
-		if err != nil {
-			shareAmount = 0
-		}
-	} else {
-		shareAmount = 0
+	if err := c.ShouldBindJSON(&loan); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	jwt := c.Request.Header.Get("Authorization")
@@ -47,12 +38,17 @@ func (handler *LoanPaymentHandler) HandleRequest(c *gin.Context) {
 	log.Println(user)
 	log.Println(lang)
 
-	resp, err := handler.loanPayment.CalculateLoanPayment(financingId, shareAmount)
+	err = handler.services.Activation(loan, financingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, resp)
+	c.Status(http.StatusNoContent)
+}
 
+func NewFinancingHandler(services port.FinancingsActionService) *FinancingsActiveHandler {
+	return &FinancingsActiveHandler{
+		services: services,
+	}
 }
