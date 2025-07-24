@@ -58,7 +58,7 @@ func (p PromissoryNotePDF) GenerateReport(financingId int) ([]byte, error) {
 	data.InstallmentAmount = formatAmount(loadFinancing.MonthlyPayment)
 	data.DownPaymentPercentage = fmt.Sprintf("%.2f", loadFinancing.DownPaymentRate)
 	data.DownPayment = formatAmount(loadFinancing.DownPaymentAmount)
-	data.LotCost = formatAmount(loadFinancing.Lot.Price)
+	data.LotCost = formatAmount(loadFinancing.Amount)
 	data.Profession = loadFinancing.Customer.Financial.Occupation
 
 	t, _ := time.Parse("2006-01-02", loadFinancing.StartDate)
