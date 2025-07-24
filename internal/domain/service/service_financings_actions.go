@@ -28,8 +28,9 @@ func (s ServiceFinancingsActions) Activation(loan model.RequestLoan, financingId
 	financings.FinancingAmount = cal.TotalAmount
 	financings.Balance = 0.0
 	financings.DownPaymentRate = cal.DownPaymentRate
-	startDate, _ := time.Parse("02/01/2006", cal.FeeSimulation[0].Payday)
-	financings.StartDate = startDate.Format("2006-01-02")
+	startDate := time.Now().Format("2006-01-02")
+	log.Print("fecha de inicio: ", startDate)
+	financings.StartDate = startDate
 	financings.TotalTerm = cal.NumberOfInstallments
 	financings.TermElapsed = 0
 	financings.MissingTerm = cal.NumberOfInstallments
