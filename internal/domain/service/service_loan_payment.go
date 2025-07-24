@@ -24,12 +24,18 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 	}
 	log.Printf(loadFinancing.StartDate)
 
-	amount := loadFinancing.Balance
+	amount := loadFinancing.FinancingAmount
 	rate := loadFinancing.InterestRateMonthly / 100
+
+	log.Print("amount: ", amount)
+	log.Print("rate: ", rate)
+	log.Print("rate year:", loadFinancing.InterestRate)
+
 	now := time.Now()
 
 	var paymentLastDate time.Time
 	if loadFinancing.Payments != nil && len(loadFinancing.Payments) > 0 {
+		log.Print("el financiamiento cuenta con pagos ")
 		payments := loadFinancing.Payments
 		slice := payments[:]
 		sort.Slice(slice, func(i, j int) bool {
@@ -39,6 +45,7 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 		})
 		paymentLastDate = slice[0].PaymentDate
 	} else {
+		log.Print("el financiamiento no cuenta con pagos")
 		paymentLastDate, err = time.Parse("2006-01-02", loadFinancing.StartDate)
 		if err != nil {
 			log.Printf(err.Error())
@@ -46,8 +53,11 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 		}
 	}
 
+	log.Print("Ultima fetch de pago: ", paymentLastDate)
+
 	days := int(now.Sub(paymentLastDate).Hours() / 24)
 
+	log.Print(days)
 	var penalty float64
 	if days > 30 {
 		penalty = 15.00
@@ -67,8 +77,13 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 
 	var shareAmount = capital + interest + penalty
 
-	var balanceStart = loadFinancing.Balance
-	var lastBalance = balanceStart - shareAmount
+	var lastBalance = amount - (shareAmount - penalty)
+
+	if lastBalance < 0 {
+		capital = capital + lastBalance
+		shareAmount = capital + interest + penalty
+		lastBalance = amount - (shareAmount - penalty)
+	}
 
 	return &model.PaymentLoanResponse{
 		Interest:      domain.RoundToTwoDecimals(interest),
@@ -76,7 +91,7 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 		Capital:       domain.RoundToTwoDecimals(capital),
 		Penalty:       domain.RoundToTwoDecimals(penalty),
 		AmountBalance: domain.RoundToTwoDecimals(lastBalance),
-		AmountStart:   domain.RoundToTwoDecimals(balanceStart),
+		AmountStart:   domain.RoundToTwoDecimals(amount),
 		Customer:      loadFinancing.Customer,
 		Lot:           loadFinancing.Lot,
 	}, nil
