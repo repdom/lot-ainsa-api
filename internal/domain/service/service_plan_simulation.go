@@ -13,7 +13,6 @@ type CalculatePlan struct {
 
 func (c CalculatePlan) GenerateSimulation(request model.RequestLoan) (*model.ResponseLoan, error) {
 	response := model.ResponseLoan{}
-	response.DownPaymentRate = request.Premium
 	response.Rate = request.Rate
 
 	response.Years = float64(request.Months / 12)
@@ -22,15 +21,16 @@ func (c CalculatePlan) GenerateSimulation(request model.RequestLoan) (*model.Res
 	n := float64(request.Months)
 	p := request.Amount
 
-	response.PremiumRate = request.Premium
-	premium := request.Premium / 100
+	porce := request.Amount / 100
+	premiun := request.Premium / porce
 
-	pm := p * premium
+	response.PremiumRate = premiun
+	response.DownPaymentRate = premiun
 
-	p = p - pm
+	p = p - request.Premium
 
 	response.TotalAmount = p
-	response.Premium = pm
+	response.Premium = request.Premium
 
 	if request.Rate == 0 {
 		payment := p / n
@@ -39,7 +39,7 @@ func (c CalculatePlan) GenerateSimulation(request model.RequestLoan) (*model.Res
 		response.RateMonths = domain.RoundToTwoDecimals(rateMont)
 		response.NumberOfInstallments = request.Months
 		response.InterestsTotal = 0
-		response.TotalPayments = domain.RoundToTwoDecimals(request.Amount + pm)
+		response.TotalPayments = domain.RoundToTwoDecimals(request.Amount + request.Premium)
 		response.FeeSimulation = FeeSimulationCalculate(request.Months, payment, 0.0, p, request)
 		return &response, nil
 	}
@@ -55,7 +55,7 @@ func (c CalculatePlan) GenerateSimulation(request model.RequestLoan) (*model.Res
 	response.MonthlyPayment = paymentR
 	interestTotal := domain.RoundToTwoDecimals((payment * n) - p)
 	response.InterestsTotal = interestTotal
-	response.TotalPayments = domain.RoundToTwoDecimals(interestTotal + p + pm)
+	response.TotalPayments = domain.RoundToTwoDecimals(interestTotal + p + request.Premium)
 	response.FeeSimulation = FeeSimulationCalculate(request.Months, payment, rateMonths, p, request)
 
 	return &response, nil
