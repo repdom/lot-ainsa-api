@@ -69,7 +69,8 @@ func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financi
 		return nil, fmt.Errorf("error reading body response: %w", err)
 
 	}
-
+	log.Print(resp.Status)
+	log.Print(string(body))
 	var result financing.Financings
 	err = json.Unmarshal(body, &result)
 	if err != nil {
