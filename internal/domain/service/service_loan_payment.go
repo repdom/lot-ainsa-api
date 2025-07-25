@@ -77,12 +77,12 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 
 	var shareAmount = capital + interest + penalty
 
-	var lastBalance = amount - (shareAmount - penalty)
+	var lastBalance = amount - ((shareAmount - penalty) + interest)
 
 	if lastBalance < 0 {
 		capital = capital + lastBalance
 		shareAmount = capital + interest + penalty
-		lastBalance = amount - (shareAmount - penalty)
+		lastBalance = amount - ((shareAmount - penalty) + interest)
 	}
 
 	return &model.PaymentLoanResponse{
