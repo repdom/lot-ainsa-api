@@ -2,6 +2,7 @@ package service
 
 import (
 	"be-lotsanmateo-api/internal/adapter/externalapi/financing"
+	modelFinancing "be-lotsanmateo-api/internal/adapter/externalapi/model/financing"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain"
 	"be-lotsanmateo-api/internal/domain/model"
@@ -36,14 +37,7 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 	var paymentLastDate time.Time
 	if loadFinancing.Payments != nil && len(loadFinancing.Payments) > 0 {
 		log.Print("el financiamiento cuenta con pagos ")
-		payments := loadFinancing.Payments
-		slice := payments[:]
-		sort.Slice(slice, func(i, j int) bool {
-			dateI := slice[i].PaymentDate
-			dateJ := slice[j].PaymentDate
-			return dateJ.Before(dateI)
-		})
-		paymentLastDate = slice[0].PaymentDate
+		paymentLastDate, _ = getLastPaymentDate(loadFinancing.Payments)
 	} else {
 		log.Print("el financiamiento no cuenta con pagos")
 		paymentLastDate, err = time.Parse("2006-01-02", loadFinancing.StartDate)
@@ -96,6 +90,22 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 		Lot:           loadFinancing.Lot,
 	}, nil
 
+}
+
+func getLastPaymentDate(payments []modelFinancing.Payment) (time.Time, error) {
+	if len(payments) == 0 {
+		return time.Time{}, nil
+	}
+
+	const layout = "2006-01-02T15:04:05"
+	sortedPayments := payments[:]
+	sort.Slice(sortedPayments, func(i, j int) bool {
+		dateI, _ := time.Parse(layout, sortedPayments[i].PaymentDate)
+		dateJ, _ := time.Parse(layout, sortedPayments[j].PaymentDate)
+		return dateJ.Before(dateI)
+	})
+
+	return time.Parse(layout, sortedPayments[0].PaymentDate)
 }
 
 func NewLoanPaymentService(env *config.Env) port.LoanPaymentService {

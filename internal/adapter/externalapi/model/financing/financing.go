@@ -1,16 +1,14 @@
 package financing
 
-import "time"
-
 type Payment struct {
-	ID               int       `json:"id"`
-	Financing        string    `json:"financing"`
-	PaymentDate      time.Time `json:"paymentDate"`
-	Amount           float64   `json:"amount"`
-	Principal        float64   `json:"principal"`
-	Interest         float64   `json:"interest"`
-	StartingBalance  float64   `json:"startingBalance"`
-	RemainingBalance float64   `json:"remainingBalance"`
+	ID               int     `json:"id"`
+	Financing        string  `json:"financing"`
+	PaymentDate      string  `json:"paymentDate"`
+	Amount           float64 `json:"amount"`
+	Principal        float64 `json:"principal"`
+	Interest         float64 `json:"interest"`
+	StartingBalance  float64 `json:"startingBalance"`
+	RemainingBalance float64 `json:"remainingBalance"`
 }
 
 type Financings struct {
