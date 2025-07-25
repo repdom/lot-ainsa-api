@@ -76,7 +76,7 @@ type Document struct {
 
 type PEP struct {
 	ID      int     `json:"id"`
-	PEP     *string `json:"pep"`
+	PEP     bool    `json:"pep"`
 	Type    *string `json:"type"`
 	Details *string `json:"details"`
 }
