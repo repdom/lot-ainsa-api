@@ -344,7 +344,7 @@ func (p PaymentPlanPDF) GeneratePDF(payment PaymentPlan) ([]byte, error) {
 	for index, element := range mov {
 		m.AddRow(5,
 			data(2, "", &props.Color{}),
-			data(8, strconv.Itoa(index), &props.Color{}),
+			data(8, strconv.Itoa(index+1), &props.Color{}),
 			data(15, element.Payday, &props.Color{}),
 			data(13, formatMoney(element.Amount, ",", "."), &props.Color{}),
 			data(13, formatMoney(element.Capital, ",", "."), &props.Color{}),
