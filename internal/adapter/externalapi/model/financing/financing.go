@@ -12,27 +12,29 @@ type Payment struct {
 }
 
 type Financings struct {
-	ID                  float64       `json:"id"`
-	Customer            Customer      `json:"customer"`
-	Lot                 Lot           `json:"lot"`
-	Reservation         Reservation   `json:"reservation"`
-	Amount              float64       `json:"amount"`
-	DownPaymentRate     float64       `json:"downPaymentRate"`
-	DownPaymentAmount   float64       `json:"downPaymentAmount"`
-	DownPaymentPending  float64       `json:"downPaymentPending"`
-	DownPaymentBalance  float64       `json:"downPaymentBalance"`
-	FinancingAmount     float64       `json:"financingAmount"`
-	Balance             float64       `json:"balance"`
-	InterestRate        float64       `json:"interestRate"`
-	InterestRateMonthly float64       `json:"interestRateMonthly,omitempty"`
-	TotalTerm           int           `json:"totalTerm,omitempty"`
-	TermElapsed         int           `json:"termElapsed"`
-	MissingTerm         int           `json:"missingTerm,omitempty"`
-	MonthlyPayment      float64       `json:"monthlyPayment,omitempty"`
-	Status              string        `json:"status"`
-	StartDate           string        `json:"startDate,omitempty"`
-	DownPayment         []DownPayment `json:"downPayment"`
-	Payments            []Payment     `json:"payments"`
+	ID                     float64       `json:"id"`
+	Customer               Customer      `json:"customer"`
+	Lot                    Lot           `json:"lot"`
+	Reservation            Reservation   `json:"reservation"`
+	Amount                 float64       `json:"amount"`
+	DownPaymentRate        float64       `json:"downPaymentRate"`
+	DownPaymentAmount      float64       `json:"downPaymentAmount"`
+	DownPaymentPending     float64       `json:"downPaymentPending"`
+	DownPaymentBalance     float64       `json:"downPaymentBalance"`
+	FinancingAmount        float64       `json:"financingAmount"`
+	FinancingBalance       float64       `json:"financingBalance"`
+	FinancingAmountPending float64       `json:"financingAmountPending"`
+	InterestBalance        float64       `json:"interestBalance"`
+	InterestRate           float64       `json:"interestRate"`
+	InterestRateMonthly    float64       `json:"interestRateMonthly,omitempty"`
+	TotalTerm              int           `json:"totalTerm,omitempty"`
+	TermElapsed            int           `json:"termElapsed"`
+	MissingTerm            int           `json:"missingTerm,omitempty"`
+	MonthlyPayment         float64       `json:"monthlyPayment,omitempty"`
+	Status                 string        `json:"status"`
+	StartDate              string        `json:"startDate,omitempty"`
+	DownPayment            []DownPayment `json:"downPayment"`
+	Payments               []Payment     `json:"payments"`
 }
 
 type Customer struct {

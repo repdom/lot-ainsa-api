@@ -52,11 +52,9 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 	days := int(now.Sub(paymentLastDate).Hours() / 24)
 
 	log.Print(days)
-	var penalty float64
+	penalty := 0.0
 	if days > 30 {
-		penalty = 15.00
-	} else {
-		penalty = 0.0
+		penalty = 0.0 // no aplica de momento
 	}
 
 	interest := amount * rate * float64(days) / 30.0
