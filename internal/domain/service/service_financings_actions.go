@@ -26,7 +26,8 @@ func (s ServiceFinancingsActions) Activation(loan model.RequestLoan, financingId
 
 	financings.Amount = cal.Amount
 	financings.FinancingAmount = cal.TotalAmount
-	financings.Balance = 0.0
+	financings.FinancingBalance = 0.0
+	financings.FinancingAmountPending = cal.TotalAmount
 	financings.DownPaymentRate = cal.DownPaymentRate
 	startDate := time.Now().Format("2006-01-02")
 	log.Print("fecha de inicio: ", startDate)
@@ -36,8 +37,6 @@ func (s ServiceFinancingsActions) Activation(loan model.RequestLoan, financingId
 	financings.MissingTerm = cal.NumberOfInstallments
 	financings.MonthlyPayment = cal.MonthlyPayment
 	financings.InterestRate = cal.Rate
-	financings.DownPaymentAmount = cal.Premium
-	financings.DownPaymentPending = 0
 	financings.InterestRateMonthly = cal.RateMonths
 	financings.Status = "active"
 	patchFinancing, err := s.api.PatchFinancing("", "", "", financingId, financings)
