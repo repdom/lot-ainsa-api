@@ -30,7 +30,11 @@ func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 	} else {
 		request.Months = loadFinancing.TotalTerm
 	}
-	request.Premium = loadFinancing.DownPaymentBalance
+	if loadFinancing.DownPaymentBalance != nil {
+		request.Premium = *loadFinancing.DownPaymentBalance
+	} else {
+		request.Premium = 0.0
+	}
 	if loadFinancing.StartDate != "" {
 		t, _ := time.Parse("2006-01-02", loadFinancing.StartDate)
 		request.Payday = t.Day()

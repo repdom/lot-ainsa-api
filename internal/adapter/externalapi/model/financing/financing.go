@@ -18,9 +18,9 @@ type Financings struct {
 	Reservation            Reservation   `json:"reservation"`
 	Amount                 float64       `json:"amount"`
 	DownPaymentRate        float64       `json:"downPaymentRate"`
-	DownPaymentAmount      float64       `json:"downPaymentAmount"`
-	DownPaymentPending     float64       `json:"downPaymentPending"`
-	DownPaymentBalance     float64       `json:"downPaymentBalance"`
+	DownPaymentAmount      *float64      `json:"downPaymentAmount,omitempty"`
+	DownPaymentPending     *float64      `json:"downPaymentPending,omitempty"`
+	DownPaymentBalance     *float64      `json:"downPaymentBalance,omitempty"`
 	FinancingAmount        float64       `json:"financingAmount"`
 	FinancingBalance       float64       `json:"financingBalance"`
 	FinancingAmountPending float64       `json:"financingAmountPending"`
