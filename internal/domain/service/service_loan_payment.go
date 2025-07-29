@@ -25,7 +25,7 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 	}
 	log.Printf(loadFinancing.StartDate)
 
-	amount := loadFinancing.FinancingAmount
+	amount := loadFinancing.FinancingAmountPending
 	rate := loadFinancing.InterestRateMonthly / 100
 
 	log.Print("amount: ", amount)
@@ -35,9 +35,9 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 	now := time.Now()
 
 	var paymentLastDate time.Time
-	if loadFinancing.Payments != nil && len(loadFinancing.Payments) > 0 {
+	if loadFinancing.Payments != nil && len(*loadFinancing.Payments) > 0 {
 		log.Print("el financiamiento cuenta con pagos ")
-		paymentLastDate, _ = getLastPaymentDate(loadFinancing.Payments)
+		paymentLastDate, _ = getLastPaymentDate(*loadFinancing.Payments)
 	} else {
 		log.Print("el financiamiento no cuenta con pagos")
 		paymentLastDate, err = time.Parse("2006-01-02", loadFinancing.StartDate)
@@ -84,8 +84,8 @@ func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64)
 		Penalty:       domain.RoundToTwoDecimals(penalty),
 		AmountBalance: domain.RoundToTwoDecimals(lastBalance),
 		AmountStart:   domain.RoundToTwoDecimals(amount),
-		Customer:      loadFinancing.Customer,
-		Lot:           loadFinancing.Lot,
+		Customer:      *loadFinancing.Customer,
+		Lot:           *loadFinancing.Lot,
 	}, nil
 
 }
