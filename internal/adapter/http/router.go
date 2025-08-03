@@ -12,7 +12,13 @@ func NewRouter(env *config.Env) *gin.Engine {
 	gin.ForceConsoleColor()
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery(), cors.Default())
+	cors.Default()
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AddAllowHeaders("Authorization")
+	corsConfig.AddAllowHeaders("x-request-id")
+	corsConfig.AllowAllOrigins = true
+	defaultConfig := cors.New(corsConfig)
+	r.Use(gin.Logger(), gin.Recovery(), defaultConfig)
 
 	test := api.NewTestHandler()
 
