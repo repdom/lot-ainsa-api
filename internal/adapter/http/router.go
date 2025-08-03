@@ -16,6 +16,8 @@ func NewRouter(env *config.Env) *gin.Engine {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AddAllowHeaders("Authorization")
 	corsConfig.AddAllowHeaders("x-request-id")
+	corsConfig.AddAllowHeaders("x-language")
+	corsConfig.AddAllowHeaders("x-user")
 	corsConfig.AllowAllOrigins = true
 	defaultConfig := cors.New(corsConfig)
 	r.Use(gin.Logger(), gin.Recovery(), defaultConfig)
