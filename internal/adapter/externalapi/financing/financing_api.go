@@ -1,7 +1,7 @@
 package financing
 
 import (
-	"be-lotsanmateo-api/internal/adapter/externalapi/model/financing"
+	"be-lotsanmateo-api/internal/adapter/externalapi/model"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -19,7 +19,7 @@ type API struct {
 	baseURL url.URL
 }
 
-func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financing.Financings, error) {
+func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*model.FinancingDomain, error) {
 	log.Println("Load financing")
 	change := url.URL{
 		Scheme: api.baseURL.Scheme,
@@ -71,7 +71,7 @@ func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financi
 	}
 	log.Print(resp.Status)
 	log.Print(string(body))
-	var result financing.Financings
+	var result model.FinancingDomain
 	err = json.Unmarshal(body, &result)
 	if err != nil {
 		log.Println(err.Error())
@@ -81,7 +81,7 @@ func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*financi
 
 }
 
-func (api *API) PatchFinancing(jwt, user, lang string, financingId int, financingPath financing.Financings) (*financing.Financings, error) {
+func (api *API) PatchFinancing(jwt, user, lang string, financingId int, financingPath model.FinancingDomain) (*model.FinancingDomain, error) {
 	log.Println("Load financing")
 	change := url.URL{
 		Scheme: api.baseURL.Scheme,
@@ -144,7 +144,7 @@ func (api *API) PatchFinancing(jwt, user, lang string, financingId int, financin
 
 	}
 	log.Printf(string(body))
-	var result financing.Financings
+	var result model.FinancingDomain
 	err = json.Unmarshal(body, &result)
 	if err != nil {
 		log.Println(err.Error())

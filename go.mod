@@ -1,8 +1,8 @@
 module be-lotsanmateo-api
 
-go 1.23.0
+go 1.23.1
 
-toolchain go1.23.7
+toolchain go1.24.5
 
 require (
 	github.com/gin-contrib/cors v1.7.5
@@ -42,6 +42,7 @@ require (
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/user0608/numeroaletras v0.1.1 // indirect
 	golang.org/x/arch v0.15.0 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/image v0.18.0 // indirect

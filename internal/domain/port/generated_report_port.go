@@ -1,7 +1,5 @@
 package port
 
-import "be-lotsanmateo-api/internal/domain/model"
-
 type PromissoryNoteService interface {
 	GenerateReport(financingId int) ([]byte, error)
 }
@@ -10,6 +8,8 @@ type ReportService interface {
 	GenerateReport(financingId int) ([]byte, error)
 }
 
-type ApiService interface {
-	GenerateSimulation(request model.RequestLoan) (*model.ResponseLoan, error)
+type InvoiceService interface {
+	InvoicePayment(paymentId int) ([]byte, error)
+	InvoiceReservation(reservationId int) ([]byte, error)
+	InvoicePremium(premiumId int) ([]byte, error)
 }

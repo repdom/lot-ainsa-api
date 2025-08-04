@@ -89,7 +89,7 @@ func (api *CustomerAPI) ExistCustomer(jwt, user, lang, document, documentType st
 
 }
 
-func (api *CustomerAPI) CreateCustomer(jwt, user, lang string, customer model.Customer) (error, error) {
+func (api *CustomerAPI) CreateCustomer(jwt, user, lang string, customer model.CustomerDomain) (error, error) {
 	log.Println("CreateCustomer")
 
 	change := url.URL{
