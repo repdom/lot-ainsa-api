@@ -23,35 +23,35 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 		return badRequest, internalServer
 	}
 
-	document := modelApi.Document{}
+	document := modelApi.DocumentDomain{}
 
 	switch strings.ToUpper(customerOnboarding.DocumentType) {
 	case "DUI":
-		document.DUI = customerOnboarding.DocumentNumber
+		document.DUI = &customerOnboarding.DocumentNumber
 		break
 	case "NIT":
-		document.NIT = customerOnboarding.DocumentNumber
+		document.NIT = &customerOnboarding.DocumentNumber
 		break
 	case "PASAPORTE":
-		document.Passport = customerOnboarding.DocumentNumber
+		document.Passport = &customerOnboarding.DocumentNumber
 		break
 	default:
 		return nil, fmt.Errorf("el tipo de documento no es valido")
 	}
 
-	customerPep := modelApi.Pep{}
+	customerPep := modelApi.PepDomain{}
 	if customerOnboarding.DetailsPep != "" {
 		customerPep.Pep = true
-		customerPep.Details = customerOnboarding.DetailsPep
+		customerPep.Details = &customerOnboarding.DetailsPep
 	}
 
-	customer := modelApi.Customer{
-		FirstName:          customerOnboarding.Names,
-		LastName:           customerOnboarding.Lastnames,
+	customer := modelApi.CustomerDomain{
+		Names:              customerOnboarding.Names,
+		LastNames:          customerOnboarding.Lastnames,
 		Nationality:        customerOnboarding.Nationality,
 		Document:           document,
-		Gender:             modelApi.Gender{Gender: customerOnboarding.Gender},
-		CivilStatus:        modelApi.CivilStatus{CivilStatus: customerOnboarding.MaritalStatus},
+		Gender:             modelApi.GenderDomain{Gender: customerOnboarding.Gender},
+		CivilStatus:        modelApi.CivilStatusDomain{CivilStatus: customerOnboarding.MaritalStatus},
 		ResidentialAddress: customerOnboarding.Address,
 		Birthday:           customerOnboarding.BirthDate,
 		City:               customerOnboarding.City,
@@ -59,7 +59,7 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 		PhoneNumber:        customerOnboarding.Phone,
 		Pep:                customerPep,
 		ZipCode:            customerOnboarding.PostalCode,
-		Financial: modelApi.Financial{
+		Financial: modelApi.FinancialDomain{
 			Position:             customerOnboarding.Position,
 			EmployerName:         customerOnboarding.Employer,
 			EstimatedIncomeRange: customerOnboarding.RangeIncome,

@@ -6,6 +6,7 @@ import (
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/model"
 	"be-lotsanmateo-api/internal/domain/port"
+	"fmt"
 	"log"
 	"time"
 )
@@ -22,21 +23,24 @@ func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 		return nil, err
 	}
 	request := model.RequestLoan{}
-	request.Rate = loadFinancing.InterestRate
+	if loadFinancing.InterestRate == nil {
+		log.Print("el financiamiento no tiene interes")
+		return nil, fmt.Errorf("el financiamiento no tiene interes")
+	}
+	request.Rate = *loadFinancing.InterestRate
 	request.Amount = loadFinancing.Amount
 	log.Printf("Total term: %d", loadFinancing.TotalTerm)
-	if loadFinancing.TotalTerm == 0 {
+	if loadFinancing.TotalTerm == nil {
 		request.Months = 240
-	} else {
-		request.Months = loadFinancing.TotalTerm
 	}
+	request.Months = *loadFinancing.TotalTerm
 	if loadFinancing.DownPaymentBalance != nil {
 		request.Premium = *loadFinancing.DownPaymentBalance
 	} else {
 		request.Premium = 0.0
 	}
-	if loadFinancing.StartDate != "" {
-		t, _ := time.Parse("2006-01-02", loadFinancing.StartDate)
+	if loadFinancing.StartDate != nil {
+		t, _ := time.Parse("2006-01-02", *loadFinancing.StartDate)
 		request.Payday = t.Day()
 	} else {
 		request.Payday = time.Now().Day()
@@ -51,13 +55,25 @@ func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 
 	var paymentPlan pdf.PaymentPlan
 	paymentPlan.Loan = *land
-	if loadFinancing.StartDate != "" {
-		t, _ := time.Parse("2006-01-02", loadFinancing.StartDate)
+	if loadFinancing.StartDate != nil {
+		t, _ := time.Parse("2006-01-02", *loadFinancing.StartDate)
 		paymentPlan.StartDate = t.Format("02/01/2006")
 	} else {
 		paymentPlan.StartDate = time.Now().Format("02/01/2006")
 	}
-	paymentPlan.DUI = loadFinancing.Customer.Document.DUI
+
+	if loadFinancing.Customer.Document.DUI != nil {
+		paymentPlan.DUI = *loadFinancing.Customer.Document.DUI
+	}
+
+	if loadFinancing.Customer.Document.NIT != nil {
+		paymentPlan.DUI = *loadFinancing.Customer.Document.NIT
+	}
+
+	if loadFinancing.Customer.Document.Passport != nil {
+		paymentPlan.DUI = *loadFinancing.Customer.Document.Passport
+	}
+
 	paymentPlan.FullName = loadFinancing.Customer.Names + " " + loadFinancing.Customer.LastNames
 	paymentPlan.Address = loadFinancing.Customer.ResidentialAddress
 	paymentPlan.Phone = loadFinancing.Customer.PhoneNumber

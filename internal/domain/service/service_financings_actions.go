@@ -2,7 +2,7 @@ package service
 
 import (
 	financingApi "be-lotsanmateo-api/internal/adapter/externalapi/financing"
-	"be-lotsanmateo-api/internal/adapter/externalapi/model/financing"
+	model2 "be-lotsanmateo-api/internal/adapter/externalapi/model"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/model"
 	"be-lotsanmateo-api/internal/domain/port"
@@ -22,22 +22,22 @@ func (s ServiceFinancingsActions) Activation(loan model.RequestLoan, financingId
 		return err
 	}
 	log.Printf("%f", cal.Amount)
-	var financings financing.Financings
+	var financings model2.FinancingDomain
 
 	financings.Amount = cal.Amount
-	financings.FinancingAmount = cal.TotalAmount
+	financings.FinancingAmount = &cal.TotalAmount
 	financings.FinancingBalance = 0.0
-	financings.FinancingAmountPending = cal.TotalAmount
-	financings.DownPaymentRate = cal.DownPaymentRate
+	financings.FinancingAmountPending = &cal.TotalAmount
+	financings.DownPaymentRate = &cal.DownPaymentRate
 	startDate := time.Now().Format("2006-01-02")
 	log.Print("fecha de inicio: ", startDate)
-	financings.StartDate = startDate
-	financings.TotalTerm = cal.NumberOfInstallments
+	financings.StartDate = &startDate
+	financings.TotalTerm = &cal.NumberOfInstallments
 	financings.TermElapsed = 0
-	financings.MissingTerm = cal.NumberOfInstallments
-	financings.MonthlyPayment = cal.MonthlyPayment
-	financings.InterestRate = cal.Rate
-	financings.InterestRateMonthly = cal.RateMonths
+	financings.MissingTerm = &cal.NumberOfInstallments
+	financings.MonthlyPayment = &cal.MonthlyPayment
+	financings.InterestRate = &cal.Rate
+	financings.InterestRateMonthly = &cal.RateMonths
 	financings.Status = "active"
 	patchFinancing, err := s.api.PatchFinancing("", "", "", financingId, financings)
 	if err != nil {

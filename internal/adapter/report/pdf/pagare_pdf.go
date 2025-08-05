@@ -66,7 +66,8 @@ type PagareData struct {
 	InstallmentCount int
 
 	// {{tasa de interes aplicada}}
-	InterestRate string
+	InterestRate      string
+	InterestOnArrears string
 
 	// {{monto de la cuota}}
 	InstallmentAmount string
