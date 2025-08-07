@@ -1,7 +1,7 @@
 package service
 
 import (
-	"be-lotsanmateo-api/internal/adapter/externalapi"
+	"be-lotsanmateo-api/internal/adapter/externalapi/client/customer"
 	modelApi "be-lotsanmateo-api/internal/adapter/externalapi/model"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/model"
@@ -12,11 +12,11 @@ import (
 )
 
 type customerOnboardingService struct {
-	customerApi *externalapi.CustomerAPI
+	customerApi *customer.CustomerAPI
 }
 
 func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, customerOnboarding model.RequestCustomerOnboarding) (error, error) {
-	log.Println("Create customer")
+	log.Println("Create domain")
 	badRequest, internalServer := c.customerApi.ExistCustomer(jwt, user, lang, customerOnboarding.DocumentNumber, customerOnboarding.DocumentType)
 	log.Println(internalServer, badRequest)
 	if internalServer != nil || badRequest != nil {
@@ -45,7 +45,7 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 		customerPep.Details = &customerOnboarding.DetailsPep
 	}
 
-	customer := modelApi.CustomerDomain{
+	domain := modelApi.CustomerDomain{
 		Names:              customerOnboarding.Names,
 		LastNames:          customerOnboarding.Lastnames,
 		Nationality:        customerOnboarding.Nationality,
@@ -69,7 +69,7 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 		},
 	}
 
-	badRequest, internalServer = c.customerApi.CreateCustomer(jwt, user, lang, customer)
+	badRequest, internalServer = c.customerApi.CreateCustomer(jwt, user, lang, domain)
 	log.Println(internalServer, "|", badRequest)
 	if internalServer != nil || badRequest != nil {
 		return badRequest, internalServer
@@ -80,7 +80,7 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 
 func NewCustomerOnboardingService(env *config.Env) port.CustomerOnboardingService {
 	baseURL := env.GetEnv("CUSTOMER_API_URL", "http://localhost:8080")
-	customerApi := externalapi.NewCustomerClient(baseURL)
+	customerApi := customer.NewCustomerClient(baseURL)
 	return &customerOnboardingService{
 		customerApi: customerApi,
 	}

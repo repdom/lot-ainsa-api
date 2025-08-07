@@ -8,9 +8,10 @@ type PaymentDomain struct {
 	Amount             float64            `json:"amount"`
 	Principal          *float64           `json:"principal,omitempty"`
 	Interest           *float64           `json:"interest,omitempty"`
+	Penalty            *float64           `json:"penalty,omitempty"`
 	StartingBalance    *float64           `json:"startingBalance,omitempty"`
 	RemainingBalance   *float64           `json:"remainingBalance,omitempty"`
-	ReceiptNumber      string             `json:"receiptNumber"`
+	ReceiptNumber      *string            `json:"receiptNumber"`
 	ReferenceNumber    *string            `json:"referenceNumber,omitempty"`
 	DowPaymentStarting *float64           `json:"dowPaymentStarting,omitempty"`
 	DownPaymentBalance *float64           `json:"downPaymentBalance,omitempty"`
@@ -132,7 +133,7 @@ type ReservationDomain struct {
 	ExpirationDate  string              `json:"expirationDate"`
 	Status          string              `json:"status"`
 	Amount          float64             `json:"amount"`
-	ReceiptNumber   string              `json:"receiptNumber"`
+	ReceiptNumber   *string             `json:"receiptNumber"`
 	ReferenceNumber string              `json:"referenceNumber"`
 	DownPayment     []DownPaymentDomain `json:"downPayment,omitempty"`
 	Financings      []FinancingDomain   `json:"financings,omitempty"`
@@ -143,8 +144,8 @@ type DownPaymentDomain struct {
 	Reservation        *ReservationDomain `json:"reservation,omitempty"`
 	Financing          *FinancingDomain   `json:"financing,omitempty"`
 	Amount             float64            `json:"amount"`
-	DowPaymentStarting float64            `json:"dowPaymentStarting"`
+	DowPaymentStarting *float64           `json:"dowPaymentStarting"`
 	DownPaymentBalance float64            `json:"downPaymentBalance"`
-	ReceiptNumber      string             `json:"receiptNumber"`
+	ReceiptNumber      *string            `json:"receiptNumber"`
 	ReferenceNumber    *string            `json:"referenceNumber,omitempty"`
 }

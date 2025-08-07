@@ -1,7 +1,7 @@
 package service
 
 import (
-	financingApi "be-lotsanmateo-api/internal/adapter/externalapi/financing"
+	financingApi "be-lotsanmateo-api/internal/adapter/externalapi/client/financing"
 	model2 "be-lotsanmateo-api/internal/adapter/externalapi/model"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/model"

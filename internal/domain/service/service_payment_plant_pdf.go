@@ -1,7 +1,7 @@
 package service
 
 import (
-	"be-lotsanmateo-api/internal/adapter/externalapi/financing"
+	"be-lotsanmateo-api/internal/adapter/externalapi/client/financing"
 	"be-lotsanmateo-api/internal/adapter/report/pdf"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/model"
@@ -16,16 +16,16 @@ type PaymentPlanPDF struct {
 	calculatePlan *CalculatePlan
 }
 
-func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
-	loadFinancing, err := p.api.LoadFinancing("", "", "", financingId)
+func (p PaymentPlanPDF) GenerateReport(jwt, user, lang string, financingId int) ([]byte, *string, error) {
+	loadFinancing, err := p.api.LoadFinancing(jwt, user, lang, financingId)
 	if err != nil {
 		log.Println(err.Error())
-		return nil, err
+		return nil, nil, err
 	}
 	request := model.RequestLoan{}
 	if loadFinancing.InterestRate == nil {
 		log.Print("el financiamiento no tiene interes")
-		return nil, fmt.Errorf("el financiamiento no tiene interes")
+		return nil, nil, fmt.Errorf("el financiamiento no tiene interes")
 	}
 	request.Rate = *loadFinancing.InterestRate
 	request.Amount = loadFinancing.Amount
@@ -48,7 +48,7 @@ func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 
 	land, err := p.calculatePlan.GenerateSimulation(request)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	paymentPDF := pdf.NewPaymentPlanPDF()
@@ -81,7 +81,11 @@ func (p PaymentPlanPDF) GenerateReport(financingId int) ([]byte, error) {
 	paymentPlan.Polygon = loadFinancing.Lot.Polygon
 	paymentPlan.Area = loadFinancing.Lot.Area
 
-	return paymentPDF.GeneratePDF(paymentPlan)
+	clientName := loadFinancing.Customer.Names + " " + loadFinancing.Customer.LastNames
+
+	var pdfData []byte
+	pdfData, fail := paymentPDF.GeneratePDF(paymentPlan)
+	return pdfData, &clientName, fail
 }
 
 func NewCalculatePlanPDF(env *config.Env) port.ReportService {

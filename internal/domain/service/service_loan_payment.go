@@ -1,7 +1,7 @@
 package service
 
 import (
-	"be-lotsanmateo-api/internal/adapter/externalapi/financing"
+	"be-lotsanmateo-api/internal/adapter/externalapi/client/financing"
 	modelFinancing "be-lotsanmateo-api/internal/adapter/externalapi/model"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain"
@@ -34,8 +34,8 @@ func (e validationError) Error() string {
 	return fmt.Sprintf("%s: %s", e.field, e.msg)
 }
 
-func (s ServiceLoanPayment) CalculateLoanPayment(financingId int, share float64) (*model.PaymentLoanResponse, error) {
-	loadFinancing, err := s.api.LoadFinancing("", "", "", financingId)
+func (s ServiceLoanPayment) CalculateLoanPayment(jwt, user, lang string, financingId int, share float64) (*model.PaymentLoanResponse, error) {
+	loadFinancing, err := s.api.LoadFinancing(jwt, user, lang, financingId)
 	if err != nil {
 		return nil, fmt.Errorf("error loading financing: %w", err)
 	}

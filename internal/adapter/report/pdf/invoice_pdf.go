@@ -2,9 +2,10 @@ package pdf
 
 import (
 	"bytes"
-	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 	"html/template"
 	"log"
+
+	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 )
 
 type InvoicePagarePDF struct{}
@@ -28,6 +29,7 @@ type ReciboPagoData struct {
 	Ctan                    string
 	NumeroDeposito          string
 	DepositoBanco           string
+	RecibidoPor             string
 	Firma                   string
 	ValorDelLote            string
 	SaldoAnterior           string
@@ -39,7 +41,7 @@ type ReciboPagoData struct {
 
 func (p InvoicePagarePDF) GenerateReport(data ReciboPagoData) ([]byte, error) {
 	// Cargar la plantilla
-	tpl, err := template.ParseFiles("docs/factura.html")
+	tpl, err := template.ParseFiles("docs/factura.gohtml")
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
@@ -84,6 +86,6 @@ func (p InvoicePagarePDF) GenerateReport(data ReciboPagoData) ([]byte, error) {
 	return pdfg.Bytes(), nil
 }
 
-func NewInvoicePagarePDF() InvoicePagarePDF {
-	return InvoicePagarePDF{}
+func NewInvoicePagarePDF() *InvoicePagarePDF {
+	return &InvoicePagarePDF{}
 }
