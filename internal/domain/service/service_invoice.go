@@ -8,6 +8,7 @@ import (
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/port"
 	"fmt"
+	"log"
 
 	"github.com/user0608/numeroaletras"
 )
@@ -99,6 +100,8 @@ func (s ServiceInvoice) InvoicePayment(jwt, user, lang, name string, paymentId i
 		efectivo = "SI"
 	}
 
+	log.Println(fmt.Sprintf("%.2f", *loadPayment.Principal))
+
 	data := pdf.ReciboPagoData{
 		RecibidoPor:             name,
 		CantidadPagadaEnNumeros: fmt.Sprintf("%.2f", loadPayment.Amount),
@@ -114,9 +117,9 @@ func (s ServiceInvoice) InvoicePayment(jwt, user, lang, name string, paymentId i
 		Efectivo:                efectivo,
 		SaldoAnterior:           fmt.Sprintf("%.2f", *loadPayment.StartingBalance),
 		SaldoActual:             fmt.Sprintf("%.2f", *loadPayment.RemainingBalance),
-		AbonoACapital:           fmt.Sprintf("%.2f", loadPayment.Principal),
-		InteresesNormales:       fmt.Sprintf("%.2f", loadPayment.Interest),
-		InteresesMoratorios:     fmt.Sprintf("%.2f", loadPayment.Penalty),
+		AbonoACapital:           fmt.Sprintf("%.2f", *loadPayment.Principal),
+		InteresesNormales:       fmt.Sprintf("%.2f", *loadPayment.Interest),
+		InteresesMoratorios:     fmt.Sprintf("%.2f", *loadPayment.Penalty),
 	}
 
 	var pdfData []byte
