@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type Env struct {
 	Port string
@@ -22,6 +25,13 @@ func getEnv(key, fallback string) string {
 func (env Env) GetEnv(key, fallback string) string {
 	if val, ok := os.LookupEnv(key); ok {
 		return val
+	}
+	return fallback
+}
+
+func (env Env) GetEnvArr(key string, fallback []string) []string {
+	if val, ok := os.LookupEnv(key); ok {
+		return strings.Split(val, ",")
 	}
 	return fallback
 }

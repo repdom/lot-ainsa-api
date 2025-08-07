@@ -78,7 +78,7 @@ type PagareData struct {
 
 func (p GeneratePagarePDF) GenerateReport(data PagareData) ([]byte, error) {
 	// Cargar la plantilla
-	tpl, err := template.ParseFiles("docs/pagare.html")
+	tpl, err := template.ParseFiles("docs/pagare.gohtml")
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err

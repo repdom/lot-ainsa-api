@@ -1,16 +1,17 @@
 package service
 
 import (
-	"be-lotsanmateo-api/internal/adapter/externalapi/financing"
+	"be-lotsanmateo-api/internal/adapter/externalapi/client/financing"
 	"be-lotsanmateo-api/internal/adapter/externalapi/model"
 	"be-lotsanmateo-api/internal/adapter/report/pdf"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/port"
 	"fmt"
-	"github.com/user0608/numeroaletras"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/user0608/numeroaletras"
 )
 
 const (
@@ -25,19 +26,23 @@ type PromissoryNotePDF struct {
 	numberConverter   *numeroaletras.NumeroALetras
 }
 
-func (p *PromissoryNotePDF) GenerateReport(financingId int) ([]byte, error) {
-	loadFinancing, err := p.api.LoadFinancing("", "", "", financingId)
+func (p *PromissoryNotePDF) GenerateReport(jwt, user, lang string, financingId int) ([]byte, *string, error) {
+	loadFinancing, err := p.api.LoadFinancing(jwt, user, lang, financingId)
 	if err != nil {
 		log.Printf("Error loading financing %d: %v", financingId, err)
-		return nil, fmt.Errorf("error cargando financiamiento: %w", err)
+		return nil, nil, fmt.Errorf("error cargando financiamiento: %w", err)
 	}
+
+	clientName := loadFinancing.Customer.Names + " " + loadFinancing.Customer.LastNames
 
 	data, err := p.buildPagareData(loadFinancing)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return p.generatePagarePDF.GenerateReport(data)
+	var pdfData []byte
+	pdfData, fail := p.generatePagarePDF.GenerateReport(data)
+	return pdfData, &clientName, fail
 }
 
 func (p *PromissoryNotePDF) buildPagareData(financing *model.FinancingDomain) (pdf.PagareData, error) {
