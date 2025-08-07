@@ -15,7 +15,7 @@ type ServiceFinancingsActions struct {
 	api           *financingApi.API
 }
 
-func (s ServiceFinancingsActions) Activation(loan model.RequestLoan, financingId int) error {
+func (s ServiceFinancingsActions) Activation(jwt, user, lang string, loan model.RequestLoan, financingId int) error {
 	cal, err := s.calculatePlan.GenerateSimulation(loan)
 	if err != nil {
 		log.Print(err.Error())
@@ -39,7 +39,7 @@ func (s ServiceFinancingsActions) Activation(loan model.RequestLoan, financingId
 	financings.InterestRate = &cal.Rate
 	financings.InterestRateMonthly = &cal.RateMonths
 	financings.Status = "active"
-	patchFinancing, err := s.api.PatchFinancing("", "", "", financingId, financings)
+	patchFinancing, err := s.api.PatchFinancing(jwt, user, lang, financingId, financings)
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func (s ServiceFinancingsActions) Activation(loan model.RequestLoan, financingId
 	return nil
 }
 
-func NewServiceFinancingsActions(env *config.Env) port.FinancingsActionService {
+func NewServiceFinancingsActions(env *config.Env) port.FinancingActionService {
 	baseURL := env.GetEnv("CUSTOMER_API_URL", "https://lot-db.rca-dev.com/")
 	api := financingApi.NewFinancingAPI(baseURL)
 	return &ServiceFinancingsActions{

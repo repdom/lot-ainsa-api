@@ -45,7 +45,7 @@ type FinancingDomain struct {
 }
 
 type CustomerDomain struct {
-	ID                 int               `json:"id"`
+	ID                 *int              `json:"id,omitempty"`
 	Names              string            `json:"names"`
 	LastNames          string            `json:"lastNames"`
 	Birthday           string            `json:"birthday"`
@@ -60,36 +60,36 @@ type CustomerDomain struct {
 	Document           DocumentDomain    `json:"document"`
 	Pep                PepDomain         `json:"pep"`
 	Financial          FinancialDomain   `json:"financial"`
-	Code               string            `json:"code"`
+	Code               *string           `json:"code,omitempty"`
 }
 
 type GenderDomain struct {
-	ID     int    `json:"id"`
-	Gender string `json:"gender"`
-	Detail string `json:"detail"`
+	ID     *int    `json:"id,omitempty"`
+	Gender string  `json:"gender"`
+	Detail *string `json:"detail,omitempty"`
 }
 
 type CivilStatusDomain struct {
-	ID          int    `json:"id"`
+	ID          *int   `json:"id,omitempty"`
 	CivilStatus string `json:"civilStatus"`
 }
 
 type DocumentDomain struct {
-	ID       int     `json:"id"`
-	DUI      *string `json:"dui"`
-	NIT      *string `json:"nit"`
-	Passport *string `json:"passport"`
+	ID       *int    `json:"id,omitempty"`
+	DUI      *string `json:"dui,omitempty"`
+	NIT      *string `json:"nit,omitempty"`
+	Passport *string `json:"passport,omitempty"`
 }
 
 type PepDomain struct {
-	ID      int     `json:"id"`
+	ID      *int    `json:"id,omitempty"`
 	Pep     bool    `json:"pep"`
-	Type    *string `json:"type"`
-	Details *string `json:"details"`
+	Type    *string `json:"type,omitempty"`
+	Details *string `json:"details,omitempty"`
 }
 
 type FinancialDomain struct {
-	ID                   int    `json:"id"`
+	ID                   *int   `json:"id,omitempty"`
 	Occupation           string `json:"occupation"`
 	EmployerName         string `json:"employerName"`
 	Position             string `json:"position"`

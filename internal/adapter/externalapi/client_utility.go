@@ -95,10 +95,15 @@ func (api *UtilityAPI) BuildRequest(method, urlStr, jwt, user, lang string, body
 
 	if jwt != "" && jwt != "null" && jwt != "undefined" {
 		if !strings.HasPrefix(jwt, "Bearer ") {
+			log.Println("Adding Bearer")
 			req.Header.Set("Authorization", "Bearer "+jwt)
 		} else {
+			log.Println("Adding JWT")
 			req.Header.Set("Authorization", jwt)
 		}
+	} else {
+		log.Println("No JWT")
+		log.Println(jwt)
 	}
 
 	return req, nil
@@ -112,6 +117,7 @@ func (api *UtilityAPI) DoRequest(req *http.Request, target interface{}) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
+			log.Println(err)
 			log.Fatal(err)
 		}
 	}(resp.Body)
@@ -122,6 +128,11 @@ func (api *UtilityAPI) DoRequest(req *http.Request, target interface{}) error {
 	}
 
 	log.Printf("Status: %s\nBody: %s", resp.Status, string(body))
+
+	if resp.StatusCode == http.StatusNoContent {
+		log.Println("No content")
+		return nil
+	}
 
 	if err := json.Unmarshal(body, target); err != nil {
 		return fmt.Errorf("error decoding json: %w", err)
