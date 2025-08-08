@@ -36,3 +36,8 @@ func NewFinancingHandler(env *config.Env) *api.FinancingsActiveHandler {
 	activated := service.NewServiceFinancingsActions(env)
 	return api.NewFinancingHandler(activated)
 }
+
+func NewInvoiceHandler(env *config.Env) *pdf.InvoiceDocumentHandler {
+	invoice := service.NewInvoiceService(env)
+	return pdf.NewInvoiceDocumentHandler(invoice)
+}
