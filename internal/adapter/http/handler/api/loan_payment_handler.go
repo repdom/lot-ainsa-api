@@ -2,10 +2,11 @@ package api
 
 import (
 	"be-lotsanmateo-api/internal/domain/port"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type LoanPaymentHandler struct {
@@ -47,7 +48,7 @@ func (handler *LoanPaymentHandler) HandleRequest(c *gin.Context) {
 	log.Println(user)
 	log.Println(lang)
 
-	resp, err := handler.loanPayment.CalculateLoanPayment(financingId, shareAmount)
+	resp, err := handler.loanPayment.CalculateLoanPayment(jwt, user, lang, financingId, shareAmount)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

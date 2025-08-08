@@ -66,7 +66,8 @@ type PagareData struct {
 	InstallmentCount int
 
 	// {{tasa de interes aplicada}}
-	InterestRate string
+	InterestRate      string
+	InterestOnArrears string
 
 	// {{monto de la cuota}}
 	InstallmentAmount string
@@ -77,7 +78,7 @@ type PagareData struct {
 
 func (p GeneratePagarePDF) GenerateReport(data PagareData) ([]byte, error) {
 	// Cargar la plantilla
-	tpl, err := template.ParseFiles("docs/pagare.html")
+	tpl, err := template.ParseFiles("docs/pagare.gohtml")
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err

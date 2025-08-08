@@ -1,7 +1,8 @@
 package service
 
 import (
-	"be-lotsanmateo-api/internal/adapter/externalapi/financing"
+	"be-lotsanmateo-api/internal/adapter/externalapi/client/financing"
+	"be-lotsanmateo-api/internal/adapter/externalapi/model"
 	"be-lotsanmateo-api/internal/adapter/report/pdf"
 	"be-lotsanmateo-api/internal/config"
 	"be-lotsanmateo-api/internal/domain/port"
@@ -9,107 +10,193 @@ import (
 	"log"
 	"strings"
 	"time"
+
+	"github.com/user0608/numeroaletras"
+)
+
+const (
+	dateFormat        = "2006-01-02"
+	displayDateFormat = "02/01/2006"
+	currency          = "Dólares"
 )
 
 type PromissoryNotePDF struct {
 	api               *financing.API
 	generatePagarePDF pdf.GeneratePagarePDF
+	numberConverter   *numeroaletras.NumeroALetras
 }
 
-func (p PromissoryNotePDF) GenerateReport(financingId int) ([]byte, error) {
-	loadFinancing, err := p.api.LoadFinancing("", "", "", financingId)
+func (p *PromissoryNotePDF) GenerateReport(jwt, user, lang string, financingId int) ([]byte, *string, error) {
+	loadFinancing, err := p.api.LoadFinancing(jwt, user, lang, financingId)
 	if err != nil {
-		log.Println(err.Error())
-		return nil, err
+		log.Printf("Error loading financing %d: %v", financingId, err)
+		return nil, nil, fmt.Errorf("error cargando financiamiento: %w", err)
 	}
 
+	clientName := loadFinancing.Customer.Names + " " + loadFinancing.Customer.LastNames
+
+	data, err := p.buildPagareData(loadFinancing)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var pdfData []byte
+	pdfData, fail := p.generatePagarePDF.GenerateReport(data)
+	return pdfData, &clientName, fail
+}
+
+func (p *PromissoryNotePDF) buildPagareData(financing *model.FinancingDomain) (pdf.PagareData, error) {
 	var data pdf.PagareData
 
-	fechaNac, err := time.Parse("2006-01-02", loadFinancing.Customer.Birthday)
+	// Validar y calcular edad del cliente
+	age, err := p.calculateAge(financing.Customer.Birthday)
 	if err != nil {
-		return nil, fmt.Errorf("error al parsear la fecha de nacimiento: %w", err)
+		return data, fmt.Errorf("error calculando edad del cliente: %w", err)
 	}
 
-	fechaActual := time.Now()
-
-	years := fechaActual.Year() - fechaNac.Year()
-	if fechaNac.YearDay() > fechaActual.YearDay() {
-		years--
+	// Obtener documento de identidad
+	identityDoc, err := p.getIdentityDocument(financing.Customer.Document)
+	if err != nil {
+		return data, err
 	}
 
-	data.NoteCode = fmt.Sprintf("%09f", loadFinancing.ID)
-	data.ClientName = fmt.Sprintf("%s %s", loadFinancing.Customer.Names, loadFinancing.Customer.LastNames)
-	data.IdentityDocument = loadFinancing.Customer.Document.DUI // loadFinancing.Customer.Document.Passport || loadFinancing.Customer.Document.NIT
-	data.ClientAge = years
-	data.Area = fmt.Sprintf("%.0f", loadFinancing.Lot.Area)
-	data.LotNumber = loadFinancing.Lot.Number
-	data.Address = loadFinancing.Customer.ResidentialAddress
-	data.Block = loadFinancing.Lot.Polygon
+	// Validar campos requeridos
+	if err := p.validateRequiredFields(financing); err != nil {
+		return data, err
+	}
 
-	var termInYears = loadFinancing.TotalTerm / 12
+	// Construir estructura de datos
+	data = pdf.PagareData{
+		NoteCode:              fmt.Sprintf("%09d", financing.ID),
+		ClientName:            fmt.Sprintf("%s %s", financing.Customer.Names, financing.Customer.LastNames),
+		IdentityDocument:      identityDoc,
+		ClientAge:             age,
+		Area:                  fmt.Sprintf("%.0f", financing.Lot.Area),
+		LotNumber:             financing.Lot.Number,
+		Address:               financing.Customer.ResidentialAddress,
+		Block:                 financing.Lot.Polygon,
+		TermInYears:           *financing.TotalTerm / 12,
+		InstallmentCount:      *financing.TotalTerm,
+		DateNow:               time.Now().Format(displayDateFormat),
+		InterestRate:          fmt.Sprintf("%.2f", *financing.InterestRate),
+		AmountToFinance:       formatAmount(*financing.FinancingAmount),
+		InstallmentAmount:     formatAmount(*financing.MonthlyPayment),
+		DownPaymentPercentage: fmt.Sprintf("%.2f", *financing.DownPaymentRate),
+		InterestOnArrears:     fmt.Sprintf("%.2f", financing.Lot.Development.InterestOnArrears),
+		LotCost:               formatAmount(financing.Amount),
+		Profession:            financing.Customer.Financial.Occupation,
+	}
 
-	log.Printf("years term: %d", termInYears)
+	// Manejar pago inicial
+	if financing.DownPaymentBalance != nil {
+		data.DownPayment = formatAmount(*financing.DownPaymentBalance)
+	} else {
+		data.DownPaymentPercentage = "0.00"
+		data.DownPayment = "0.00"
+	}
 
-	data.TermInYears = termInYears
-	data.InstallmentCount = loadFinancing.TotalTerm
-	data.DateNow = fechaActual.Format("02/01/2006")
-	data.InterestRate = fmt.Sprintf("%.2f", loadFinancing.InterestRate)
-	data.AmountToFinance = formatAmount(loadFinancing.FinancingAmount)
-	data.InstallmentAmount = formatAmount(loadFinancing.MonthlyPayment)
-	data.DownPaymentPercentage = fmt.Sprintf("%.2f", loadFinancing.DownPaymentRate)
-	data.DownPayment = formatAmount(loadFinancing.DownPaymentAmount)
-	data.LotCost = formatAmount(loadFinancing.Amount)
-	data.Profession = loadFinancing.Customer.Financial.Occupation
+	// Calcular fecha del primer pago
+	if financing.StartDate != nil {
+		startDate, err := time.Parse(dateFormat, *financing.StartDate)
+		if err != nil {
+			return data, fmt.Errorf("error parseando fecha de inicio: %w", err)
+		}
+		data.FirstPaymentDate = startDate.AddDate(0, 1, 0).Format(displayDateFormat)
+	}
 
-	t, _ := time.Parse("2006-01-02", loadFinancing.StartDate)
+	// Convertir montos a palabras
+	data.AmountToFinanceInWords, _ = p.numberConverter.ToInvoice(*financing.FinancingAmount, 2, currency)
+	data.LotCostInWords, _ = p.numberConverter.ToInvoice(financing.Amount, 2, currency)
 
-	data.FirstPaymentDate = t.AddDate(0, 1, 0).Format("02/01/2006")
-	data.AmountToFinanceInWords = ""
-	data.LotCostInWords = ""
-	data.DownPaymentInWords = ""
+	if financing.DownPaymentBalance != nil {
+		data.DownPaymentInWords, _ = p.numberConverter.ToInvoice(*financing.DownPaymentBalance, 2, currency)
+	}
 
-	return p.generatePagarePDF.GenerateReport(data)
-
+	return data, nil
 }
 
-func formatAmount(amount float64) string {
-	// Convertir el número a string con 2 decimales
-	s := fmt.Sprintf("%.2f", amount)
+func (p *PromissoryNotePDF) calculateAge(birthday string) (int, error) {
+	birthDate, err := time.Parse(dateFormat, birthday)
+	if err != nil {
+		return 0, fmt.Errorf("formato de fecha de nacimiento inválido: %w", err)
+	}
 
-	// Separar parte entera y decimal
+	now := time.Now()
+	age := now.Year() - birthDate.Year()
+
+	// Ajustar si no ha cumplido años este año
+	if now.YearDay() < birthDate.YearDay() {
+		age--
+	}
+
+	return age, nil
+}
+
+func (p *PromissoryNotePDF) getIdentityDocument(doc model.DocumentDomain) (string, error) {
+	switch {
+	case doc.DUI != nil:
+		return *doc.DUI, nil
+	case doc.NIT != nil:
+		return *doc.NIT, nil
+	case doc.Passport != nil:
+		return *doc.Passport, nil
+	default:
+		return "", fmt.Errorf("el cliente no tiene documento de identidad")
+	}
+}
+
+func (p *PromissoryNotePDF) validateRequiredFields(financing *model.FinancingDomain) error {
+	if financing.TotalTerm == nil {
+		return fmt.Errorf("el financiamiento no tiene plazo definido")
+	}
+	if financing.FinancingAmount == nil {
+		return fmt.Errorf("el financiamiento no tiene monto definido")
+	}
+	if financing.MonthlyPayment == nil {
+		return fmt.Errorf("el financiamiento no tiene pago mensual definido")
+	}
+	if financing.StartDate == nil {
+		return fmt.Errorf("el financiamiento no tiene fecha de inicio")
+	}
+	return nil
+}
+
+// Optimizada función formatAmount usando strings.Builder
+func formatAmount(amount float64) string {
+	s := fmt.Sprintf("%.2f", amount)
 	parts := strings.Split(s, ".")
 	intPart := parts[0]
 	decPart := parts[1]
 
-	// Insertar comas en la parte entera
-	var result []string
-	for i, r := range reverseString(intPart) {
-		if i != 0 && i%3 == 0 {
-			result = append(result, ",")
+	if len(intPart) <= 3 {
+		return s
+	}
+
+	var builder strings.Builder
+	builder.Grow(len(intPart) + (len(intPart)-1)/3 + 3) // Pre-allocate capacity
+
+	// Insertar comas desde la derecha
+	for i, digit := range intPart {
+		if i > 0 && (len(intPart)-i)%3 == 0 {
+			builder.WriteByte(',')
 		}
-		result = append(result, string(r))
+		builder.WriteRune(digit)
 	}
 
-	// Revertir de nuevo la parte entera formateada
-	formattedInt := reverseString(strings.Join(result, ""))
+	builder.WriteByte('.')
+	builder.WriteString(decPart)
 
-	return formattedInt + "." + decPart
-}
-
-func reverseString(s string) string {
-	runes := []rune(s)
-	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
-		runes[i], runes[j] = runes[j], runes[i]
-	}
-	return string(runes)
+	return builder.String()
 }
 
 func NewPromissoryNotePDF(env *config.Env) port.PromissoryNoteService {
 	baseURL := env.GetEnv("CUSTOMER_API_URL", "https://lot-db.rca-dev.com/")
 	api := financing.NewFinancingAPI(baseURL)
 	pagarePDF := pdf.NewGeneratePagarePDF()
+
 	return &PromissoryNotePDF{
 		api:               api,
 		generatePagarePDF: pagarePDF,
+		numberConverter:   numeroaletras.NewNumeroALetras(),
 	}
 }

@@ -1,4 +1,4 @@
-package externalapi
+package customer
 
 import (
 	"be-lotsanmateo-api/internal/adapter/externalapi/model"
@@ -72,7 +72,7 @@ func (api *CustomerAPI) ExistCustomer(jwt, user, lang, document, documentType st
 	_, err = io.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
-		return nil, fmt.Errorf("error reading response: %w", err)
+		return nil, fmt.Errorf("error reading body response: %w", err)
 
 	}
 
@@ -89,7 +89,7 @@ func (api *CustomerAPI) ExistCustomer(jwt, user, lang, document, documentType st
 
 }
 
-func (api *CustomerAPI) CreateCustomer(jwt, user, lang string, customer model.Customer) (error, error) {
+func (api *CustomerAPI) CreateCustomer(jwt, user, lang string, customer model.CustomerDomain) (error, error) {
 	log.Println("CreateCustomer")
 
 	change := url.URL{
@@ -150,6 +150,10 @@ func (api *CustomerAPI) CreateCustomer(jwt, user, lang string, customer model.Cu
 	detail, ok := result["detail"].(string)
 	if !ok {
 		detail = "Internal Server Error"
+	}
+	message, ok := result["message"].(string)
+	if ok {
+		detail = message
 	}
 
 	log.Println("responser create customer ", detail)

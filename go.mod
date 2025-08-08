@@ -1,17 +1,20 @@
 module be-lotsanmateo-api
 
-go 1.23.0
+go 1.23.1
 
-toolchain go1.23.7
+toolchain go1.24.5
 
 require (
+	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.9.3
 	github.com/gin-contrib/cors v1.7.5
 	github.com/gin-gonic/gin v1.10.0
+	github.com/goccy/go-json v0.10.5
+	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/johnfercher/maroto/v2 v2.3.1
+	github.com/user0608/numeroaletras v0.1.1
 )
 
 require (
-	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.9.3 // indirect
 	github.com/boombuler/barcode v1.0.1 // indirect
 	github.com/bytedance/sonic v1.13.2 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
@@ -22,7 +25,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.26.0 // indirect
-	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/hhrutter/lzw v1.0.0 // indirect
 	github.com/hhrutter/tiff v1.0.1 // indirect
