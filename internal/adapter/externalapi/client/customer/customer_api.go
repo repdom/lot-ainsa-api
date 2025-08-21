@@ -151,6 +151,10 @@ func (api *CustomerAPI) CreateCustomer(jwt, user, lang string, customer model.Cu
 	if !ok {
 		detail = "Internal Server Error"
 	}
+	message, ok := result["message"].(string)
+	if ok {
+		detail = message
+	}
 
 	log.Println("responser create customer ", detail)
 

@@ -3,14 +3,15 @@ package api
 import (
 	"be-lotsanmateo-api/internal/domain/model"
 	"be-lotsanmateo-api/internal/domain/port"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type FinancingsActiveHandler struct {
-	services port.FinancingsActionService
+	services port.FinancingActionService
 }
 
 func (handler *FinancingsActiveHandler) HandleRequest(c *gin.Context) {
@@ -38,7 +39,7 @@ func (handler *FinancingsActiveHandler) HandleRequest(c *gin.Context) {
 	log.Println(user)
 	log.Println(lang)
 
-	err = handler.services.Activation(loan, financingId)
+	err = handler.services.Activation(jwt, user, lang, loan, financingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -47,7 +48,7 @@ func (handler *FinancingsActiveHandler) HandleRequest(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func NewFinancingHandler(services port.FinancingsActionService) *FinancingsActiveHandler {
+func NewFinancingHandler(services port.FinancingActionService) *FinancingsActiveHandler {
 	return &FinancingsActiveHandler{
 		services: services,
 	}

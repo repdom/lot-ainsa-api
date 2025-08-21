@@ -35,7 +35,7 @@ func (api *API) LoadFinancing(jwt, user, lang string, financingId int) (*model.F
 }
 
 func (api *API) PatchFinancing(jwt, user, lang string, financingId int, financingPath model.FinancingDomain) (*model.FinancingDomain, error) {
-	log.Println("Loading down payment")
+	log.Println("Loading financing")
 
 	urlStr := api.utility.BuildURLParameter("id", financingId)
 

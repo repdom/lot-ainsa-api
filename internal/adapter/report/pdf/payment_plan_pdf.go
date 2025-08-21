@@ -3,6 +3,9 @@ package pdf
 import (
 	"be-lotsanmateo-api/internal/domain/model"
 	"fmt"
+	"log"
+	"strconv"
+
 	"github.com/johnfercher/maroto/v2"
 	"github.com/johnfercher/maroto/v2/pkg/components/col"
 	"github.com/johnfercher/maroto/v2/pkg/components/image"
@@ -15,8 +18,6 @@ import (
 	"github.com/johnfercher/maroto/v2/pkg/consts/pagesize"
 	"github.com/johnfercher/maroto/v2/pkg/core"
 	"github.com/johnfercher/maroto/v2/pkg/props"
-	"log"
-	"strconv"
 )
 
 func NewPaymentPlanPDF() PaymentPlanPDF {
@@ -190,7 +191,7 @@ func (p PaymentPlanPDF) GeneratePDF(payment PaymentPlan) ([]byte, error) {
 				BorderThickness: 0.5,
 			}),
 		col.New(16).Add(
-			text.New(formatMoney(payment.Loan.Amount, ",", "."), props.Text{
+			text.New(formatMoney(payment.Loan.TotalAmount, ",", "."), props.Text{
 				Align: align.Center,
 				Color: &props.Color{Red: 255, Green: 255, Blue: 255},
 			}),

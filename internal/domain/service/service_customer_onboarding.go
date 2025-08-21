@@ -92,7 +92,7 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 }
 
 func NewCustomerOnboardingService(env *config.Env) port.CustomerOnboardingService {
-	baseURL := env.GetEnv("CUSTOMER_API_URL", "http://localhost:8080")
+	baseURL := env.GetEnv("CUSTOMER_API_URL", "https://lot-db.rca-dev.com/")
 	customerApi := customer.NewCustomerClient(baseURL)
 	return &customerOnboardingService{
 		customerApi: customerApi,
