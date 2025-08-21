@@ -44,6 +44,18 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 		customerPep.Pep = true
 		customerPep.Details = &customerOnboarding.DetailsPep
 	}
+	if customerOnboarding.FullName != "" {
+		customerPep.Pep = true
+		customerPep.FullName = &customerOnboarding.FullName
+	}
+	if customerOnboarding.Title != "" {
+		customerPep.Pep = true
+		customerPep.Title = &customerOnboarding.Title
+	}
+	if customerOnboarding.Relationship != "" {
+		customerPep.Pep = true
+		customerPep.Relationship = &customerOnboarding.Relationship
+	}
 
 	domain := modelApi.CustomerDomain{
 		Names:              customerOnboarding.Names,
@@ -59,6 +71,7 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 		PhoneNumber:        customerOnboarding.Phone,
 		Pep:                customerPep,
 		ZipCode:            customerOnboarding.PostalCode,
+		Profession:         customerOnboarding.ProfessionDUI,
 		Financial: modelApi.FinancialDomain{
 			Position:             customerOnboarding.Position,
 			EmployerName:         customerOnboarding.Employer,

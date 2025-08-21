@@ -61,6 +61,7 @@ type CustomerDomain struct {
 	Pep                PepDomain         `json:"pep"`
 	Financial          FinancialDomain   `json:"financial"`
 	Code               string            `json:"code"`
+	Profession         string            `json:"profession"`
 }
 
 type GenderDomain struct {
@@ -82,10 +83,13 @@ type DocumentDomain struct {
 }
 
 type PepDomain struct {
-	ID      int     `json:"id"`
-	Pep     bool    `json:"pep"`
-	Type    *string `json:"type"`
-	Details *string `json:"details"`
+	ID           int     `json:"id"`
+	Pep          bool    `json:"pep"`
+	Type         *string `json:"type"`
+	Details      *string `json:"details"`
+	FullName     *string `json:"fullName"`
+	Title        *string `json:"title"`
+	Relationship *string `json:"relationship"`
 }
 
 type FinancialDomain struct {
