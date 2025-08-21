@@ -2,9 +2,10 @@ package pdf
 
 import (
 	"bytes"
-	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 	"html/template"
 	"log"
+
+	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 )
 
 type GeneratePagarePDF struct{}
@@ -37,6 +38,8 @@ type PagareData struct {
 	IdentityDocument string
 
 	DateNow string
+
+	FinancingAmountPercentage string
 
 	// {{monto costo del lote financiado}}
 	LotCost string
