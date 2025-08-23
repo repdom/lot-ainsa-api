@@ -45,23 +45,23 @@ type FinancingDomain struct {
 }
 
 type CustomerDomain struct {
-	ID                 *int              `json:"id,omitempty"`
-	Names              string            `json:"names"`
-	LastNames          string            `json:"lastNames"`
-	Birthday           string            `json:"birthday"`
-	Gender             GenderDomain      `json:"gender"`
-	CivilStatus        CivilStatusDomain `json:"civilStatus"`
-	Nationality        string            `json:"nationality"`
-	ResidentialAddress string            `json:"residentialAddress"`
-	City               string            `json:"city"`
-	ZipCode            string            `json:"zipCode"`
-	PhoneNumber        string            `json:"phoneNumber"`
-	Email              string            `json:"email"`
-	Document           DocumentDomain    `json:"document"`
-	Pep                PepDomain         `json:"pep"`
-	Financial          FinancialDomain   `json:"financial"`
-	Code               string            `json:"code"`
-	Profession         string            `json:"profession"`
+	ID                 *int               `json:"id,omitempty"`
+	Names              string             `json:"names"`
+	LastNames          string             `json:"lastNames"`
+	Birthday           string             `json:"birthday"`
+	Gender             *GenderDomain      `json:"gender,omitempty"`
+	CivilStatus        *CivilStatusDomain `json:"civilStatus,omitempty"`
+	Nationality        *string            `json:"nationality,omitempty"`
+	ResidentialAddress string             `json:"residentialAddress"`
+	City               *string            `json:"city,omitempty"`
+	ZipCode            *string            `json:"zipCode,omitempty"`
+	PhoneNumber        string             `json:"phoneNumber"`
+	Email              *string            `json:"email,omitempty"`
+	Document           DocumentDomain     `json:"document"`
+	Pep                *PepDomain         `json:"pep,omitempty"`
+	Financial          *FinancialDomain   `json:"financial,omitempty"`
+	Code               *string            `json:"code,omitempty"`
+	Profession         *string            `json:"profession,omitempty"`
 }
 
 type GenderDomain struct {
@@ -83,7 +83,7 @@ type DocumentDomain struct {
 }
 
 type PepDomain struct {
-	ID           *int     `json:"id"`
+	ID           *int    `json:"id"`
 	Pep          bool    `json:"pep"`
 	Type         *string `json:"type"`
 	Details      *string `json:"details"`
