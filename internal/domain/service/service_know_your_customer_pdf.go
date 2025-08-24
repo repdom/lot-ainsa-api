@@ -15,16 +15,16 @@ type ServiceKnowYourCustomer struct {
 }
 
 func (s ServiceKnowYourCustomer) GenerateReport(jwt, user, lang string, customerId int) ([]byte, *string, error) {
-	log.Println("GenerateReport know your customer")
-	customer, err := s.api.GetCustomerId(jwt, user, lang, customerId)
+	log.Println("GenerateReport know your customerDomain")
+	customerDomain, err := s.api.GetCustomerId(jwt, user, lang, customerId)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	documentType, documentNumber := documents(customer)
-	fullName := customer.Names + " " + customer.LastNames
+	documentType, documentNumber := documents(customerDomain)
+	fullName := customerDomain.Names + " " + customerDomain.LastNames
 	isPep := "No"
-	if customer.Pep != nil && customer.Pep.Pep == true {
+	if customerDomain.Pep != nil && customerDomain.Pep.Pep == true {
 		isPep = "Si"
 	}
 
@@ -32,23 +32,27 @@ func (s ServiceKnowYourCustomer) GenerateReport(jwt, user, lang string, customer
 		NombreCompleto:         fullName,
 		TipoDocumento:          documentType,
 		NumeroDocumento:        documentNumber,
-		FechaNacimiento:        customer.Birthday,
-		Genero:                 *customer.Gender.Detail,
-		EstadoCivil:            customer.CivilStatus.CivilStatus,
-		Nacionalidad:           *customer.Nationality,
-		DireccionResidencia:    customer.ResidentialAddress,
-		TelefonoContacto:       customer.PhoneNumber,
-		CorreoElectronico:      *customer.Email,
-		Ciudad:                 *customer.City,
-		CodigoPostal:           *customer.ZipCode,
-		OcupacionProfesion:     validData(customer.Profession),
-		NombreEmpresa:          customer.Financial.EmployerName,
-		CargoPuesto:            customer.Financial.Position,
-		FuenteIngresos:         customer.Financial.IncomeSource,
-		RangoIngresosMensuales: customer.Financial.EstimatedIncomeRange,
-		PropositoRelacion:      customer.Financial.MainPurpose,
+		FechaNacimiento:        customerDomain.Birthday,
+		Genero:                 *customerDomain.Gender.Detail,
+		EstadoCivil:            customerDomain.CivilStatus.CivilStatus,
+		Nacionalidad:           *customerDomain.Nationality,
+		DireccionResidencia:    customerDomain.ResidentialAddress,
+		TelefonoContacto:       customerDomain.PhoneNumber,
+		CorreoElectronico:      *customerDomain.Email,
+		Ciudad:                 *customerDomain.City,
+		CodigoPostal:           *customerDomain.ZipCode,
+		OcupacionProfesionDUI:  validData(customerDomain.Profession),
+		OcupacionProfesion:     customerDomain.Financial.Occupation,
+		NombreEmpresa:          customerDomain.Financial.EmployerName,
+		CargoPuesto:            customerDomain.Financial.Position,
+		FuenteIngresos:         customerDomain.Financial.IncomeSource,
+		RangoIngresosMensuales: customerDomain.Financial.EstimatedIncomeRange,
+		PropositoRelacion:      customerDomain.Financial.MainPurpose,
 		EsPEP:                  isPep,
-		DetallesPEP:            validData(customer.Pep.Details),
+		DetallesPEP:            validData(customerDomain.Pep.Details),
+		FullNamePep:            validData(customerDomain.Pep.FullName),
+		TitlePep:               validData(customerDomain.Pep.Title),
+		RelationshipPep:        validData(customerDomain.Pep.Relationship),
 		Firma:                  fullName,
 	}
 	pdfData, fail := s.pdf.GenerateReport(data)

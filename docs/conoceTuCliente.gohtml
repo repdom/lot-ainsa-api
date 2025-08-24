@@ -6,28 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario Conoce a tu Cliente</title>
     <style>
-        
-        /*body {*/
-        /*    font-family: Arial, sans-serif;*/
-        /*    background-color: #f4f7f9;*/
-        /*    color: #333;*/
-        /*    line-height: 1.6;*/
-        /*    margin: 0;*/
-        /*    padding: 20px;*/
-        /*}*/
-
-        
-        /*.container {*/
-        /*    max-width: 800px;*/
-        /*    margin: 20px auto;*/
-        /*    padding: 30px;*/
-        /*    background-color: #ffffff;*/
-        /*    border-radius: 10px;*/
-        /*    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);*/
-        /*    border: 1px solid #e0e0e0;*/
-        /*}*/
-
-        
         h1, h2 {
             color: #005a9c;
             border-bottom: 2px solid #005a9c;
@@ -45,12 +23,10 @@
             margin-top: 30px;
         }
 
-        
         .form-group {
             margin-bottom: 20px;
         }
 
-        
         .form-group label {
             display: block;
             font-weight: bold;
@@ -58,10 +34,9 @@
             color: #555;
         }
 
-        
         .response-placeholder {
             font-family: 'Courier New', Courier, monospace;
-            color: #0f0f0e; 
+            color: #0f0f0e;
             background-color: #f9f2f2;
             padding: 5px 8px;
             border-radius: 4px;
@@ -79,8 +54,7 @@
             margin: 0;
             font-style: italic;
         }
-        
-       
+
         .signature-section {
             margin-top: 40px;
             text-align: center;
@@ -89,10 +63,18 @@
         .signature-line {
             display: inline-block;
             border-top: 2px solid #333;
-            width: 250px;
+            width: 425px;
             padding-top: 5px;
             font-weight: bold;
         }
+
+        .signature-line-name {
+            display: inline-block;
+            width: 425px;
+            padding-top: 5px;
+            font-weight: bold;
+        }
+
         .page-break {
             page-break-after: always;
         }
@@ -124,6 +106,10 @@
             <div class="form-group">
                 <label>Género:</label>
                 <span class="response-placeholder">{{.Genero}}</span>
+            </div>
+            <div class="form-group">
+                <label>Profesión (según DUI):</label>
+                <span class="response-placeholder">{{.OcupacionProfesionDUI}}</span>
             </div>
             <div class="form-group">
                 <label>Estado civil:</label>
@@ -193,20 +179,44 @@
                 <label>¿Es usted o algún familiar cercano una figura pública u ocupa algún cargo político?</label>
                 <span class="response-placeholder">{{.EsPEP}}</span>
             </div>
+
             <div class="form-group">
-                <label>Si su respuesta es afirmativa, por favor, proporcione detalles:</label>
+                <label>Nombre completo del familiar pep:</label>
+                <span class="response-placeholder">{{.FullNamePep}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>La position que desempeña:</label>
+                <span class="response-placeholder">{{.TitlePep}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>Relación que tiene con la persona pep:</label>
+                <span class="response-placeholder">{{.RelationshipPep}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>Detalles extras:</label>
                 <span class="response-placeholder">{{.DetallesPEP}}</span>
             </div>
         </section>
-        
+
+      <div class="page-break"></div>
+
         <section>
             <h2>5. Autorización y Consentimiento</h2>
             <div class="declaration">
                 <p>Declaro bajo juramento que la información proporcionada en este formulario es correcta, completa y veraz.</p>
                 <p>Entiendo que mis datos serán utilizados para fines de identificación y verificación conforme a las normativas vigentes en materia de bienes inmuebles.</p>
             </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
             <div class="signature-section">
                 <div class="signature-line">
+                </div>
+                <div class="signature-line-name">
                     Firma: <span class="response-placeholder">{{.Firma}}</span>
                 </div>
             </div>
