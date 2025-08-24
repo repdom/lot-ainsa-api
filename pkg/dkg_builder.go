@@ -41,3 +41,13 @@ func NewInvoiceHandler(env *config.Env) *pdf.InvoiceDocumentHandler {
 	invoice := service.NewInvoiceService(env)
 	return pdf.NewInvoiceDocumentHandler(invoice)
 }
+
+func NewKnowYourCustomerHandler(env *config.Env) *pdf.KnowYourCustomerHandler {
+	knowYourCustomer := service.NewKnowYourCustomerService(env)
+	return pdf.NewKnowYourCustomerHandler(knowYourCustomer)
+}
+
+func NewFinancingRequestHandler(env *config.Env) *pdf.FinancingRequestHandler {
+	financingRequest := service.NewFinancingRequestService(env)
+	return pdf.NewFinancingRequestHandler(financingRequest)
+}
