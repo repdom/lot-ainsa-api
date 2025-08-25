@@ -1,10 +1,10 @@
 package pdf
 
 import (
+	"be-lotsanmateo-api/internal/adapter/http/handler/pdf/utility"
 	"be-lotsanmateo-api/internal/domain/port"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,26 +19,13 @@ func NewPaymentPlanDocumentHandler(service port.ReportService) *PaymentPlanDocum
 
 func (handler *PaymentPlanDocumentHandler) GeneratePDF(c *gin.Context) {
 
-	financingIdQuery := c.Query("financingId")
-	view := c.Query("view")
-
-	jwt := c.Request.Header.Get("Authorization")
-	user := c.Request.Header.Get("x-user")
-	lang := c.Request.Header.Get("x-language")
-
-	financingId, err := strconv.Atoi(financingIdQuery)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "financingId not valid"})
+	financingId, ok := utility.ParseQueryInt(c, "financingId")
+	view, _ := utility.ParseQueryBool(c, "view")
+	if !ok {
 		return
 	}
 
-	boolValue, err := strconv.ParseBool(view)
-	val := ""
-	if !boolValue {
-		val += "attachment;"
-	} else {
-		val += "inline;"
-	}
+	jwt, user, lang, _ := utility.ExtractHeaders(c)
 
 	pdfData, name, err := handler.service.GenerateReport(jwt, user, lang, financingId)
 
@@ -47,9 +34,7 @@ func (handler *PaymentPlanDocumentHandler) GeneratePDF(c *gin.Context) {
 		return
 	}
 
-	val += fmt.Sprintf("filename=%s_plan_de_pago.pdf", *name)
+	disposition := utility.BuildDispositionBool(view, fmt.Sprintf("filename=%s_plan_de_pago.pdf", *name))
 
-	c.Header("Content-Type", "application/pdf")
-	c.Header("Content-Disposition", val)
-	c.Data(http.StatusOK, "application/pdf", pdfData)
+	utility.Response(c, disposition, pdfData)
 }

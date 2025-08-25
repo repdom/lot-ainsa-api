@@ -1,10 +1,10 @@
 package pdf
 
 import (
+	"be-lotsanmateo-api/internal/adapter/http/handler/pdf/utility"
 	"be-lotsanmateo-api/internal/domain/port"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,8 +18,8 @@ func NewInvoiceDocumentHandler(service port.InvoiceService) *InvoiceDocumentHand
 }
 
 func (handler *InvoiceDocumentHandler) GeneratePayment(c *gin.Context) {
-	jwt, user, lang, name := extractHeaders(c)
-	reservationId, ok := parseQueryInt(c, "paymentId")
+	jwt, user, lang, name := utility.ExtractHeaders(c)
+	reservationId, ok := utility.ParseQueryInt(c, "paymentId")
 	if !ok {
 		return
 	}
@@ -31,20 +31,14 @@ func (handler *InvoiceDocumentHandler) GeneratePayment(c *gin.Context) {
 		return
 	}
 
-	disposition := buildDisposition(c.Query("view"), fmt.Sprintf("%s_pago.pdf", *clientName))
+	disposition := utility.BuildDisposition(c.Query("view"), fmt.Sprintf("%s_pago.pdf", *clientName))
 
-	response(c, disposition, pdfData)
-}
-
-func response(c *gin.Context, disposition string, pdfData []byte) {
-	c.Header("Content-Type", "application/pdf")
-	c.Header("Content-Disposition", disposition)
-	c.Data(http.StatusOK, "application/pdf", pdfData)
+	utility.Response(c, disposition, pdfData)
 }
 
 func (handler *InvoiceDocumentHandler) GenerateDownPayment(c *gin.Context) {
-	jwt, user, lang, name := extractHeaders(c)
-	reservationId, ok := parseQueryInt(c, "downPaymentId")
+	jwt, user, lang, name := utility.ExtractHeaders(c)
+	reservationId, ok := utility.ParseQueryInt(c, "downPaymentId")
 	if !ok {
 		return
 	}
@@ -56,14 +50,14 @@ func (handler *InvoiceDocumentHandler) GenerateDownPayment(c *gin.Context) {
 		return
 	}
 
-	disposition := buildDisposition(c.Query("view"), fmt.Sprintf("%s_prima.pdf", *clientName))
+	disposition := utility.BuildDisposition(c.Query("view"), fmt.Sprintf("%s_prima.pdf", *clientName))
 
-	response(c, disposition, pdfData)
+	utility.Response(c, disposition, pdfData)
 }
 
 func (handler *InvoiceDocumentHandler) GenerateReservation(c *gin.Context) {
-	jwt, user, lang, name := extractHeaders(c)
-	reservationId, ok := parseQueryInt(c, "reservationId")
+	jwt, user, lang, name := utility.ExtractHeaders(c)
+	reservationId, ok := utility.ParseQueryInt(c, "reservationId")
 	if !ok {
 		return
 	}
@@ -75,34 +69,7 @@ func (handler *InvoiceDocumentHandler) GenerateReservation(c *gin.Context) {
 		return
 	}
 
-	disposition := buildDisposition(c.Query("view"), fmt.Sprintf("%s_reserva.pdf", *clientName))
+	disposition := utility.BuildDisposition(c.Query("view"), fmt.Sprintf("%s_reserva.pdf", *clientName))
 
-	response(c, disposition, pdfData)
-}
-
-func extractHeaders(c *gin.Context) (jwt, user, lang, name string) {
-	jwt = c.GetHeader("Authorization")
-	user = c.GetHeader("x-user")
-	lang = c.GetHeader("x-language")
-	name = c.GetString("name")
-	return
-}
-
-func parseQueryInt(c *gin.Context, key string) (int, bool) {
-	valueStr := c.Query(key)
-	value, err := strconv.Atoi(valueStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("%s not valid", key)})
-		return 0, false
-	}
-	return value, true
-}
-
-func buildDisposition(view string, filename string) string {
-	isInline, err := strconv.ParseBool(view)
-	dispositionType := "attachment;"
-	if err == nil && isInline {
-		dispositionType = "inline;"
-	}
-	return fmt.Sprintf("%sfilename=%s", dispositionType, filename)
+	utility.Response(c, disposition, pdfData)
 }

@@ -1,6 +1,7 @@
 package customer
 
 import (
+	"be-lotsanmateo-api/internal/adapter/externalapi"
 	"be-lotsanmateo-api/internal/adapter/externalapi/model"
 	"bytes"
 	"encoding/json"
@@ -18,6 +19,7 @@ import (
 type CustomerAPI struct {
 	client  *http.Client
 	baseURL url.URL
+	utility *externalapi.UtilityAPI
 }
 
 func (api *CustomerAPI) ExistCustomer(jwt, user, lang, document, documentType string) (error, error) {
@@ -171,6 +173,26 @@ func (api *CustomerAPI) CreateCustomer(jwt, user, lang string, customer model.Cu
 
 }
 
+func (api *CustomerAPI) GetCustomerId(jwt, user, lang string, id int) (*model.CustomerDomain, error) {
+	log.Println("Loading customer with id:", id)
+
+	urlStr := api.utility.BuildURLWithID("id", id)
+
+	req, err := api.utility.BuildRequestGet(urlStr, jwt, user, lang)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	var result model.CustomerDomain
+	if err := api.utility.DoRequest(req, &result); err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &result, nil
+}
+
 func NewCustomerClient(baseURL string) *CustomerAPI {
 	service, err := url.Parse(baseURL)
 	if err != nil {
@@ -187,5 +209,8 @@ func NewCustomerClient(baseURL string) *CustomerAPI {
 			Timeout: 15 * time.Second,
 		},
 		baseURL: invokeService,
+		utility: externalapi.NewUtilityAPI(&http.Client{
+			Timeout: 15 * time.Second,
+		}, invokeService),
 	}
 }

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base href="file:///app/docs/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Conoce a tu Cliente</title>
+    <style>
+        h1, h2 {
+            color: #005a9c;
+            border-bottom: 2px solid #005a9c;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1em;
+        }
+
+        h2 {
+            font-size: 1em;
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .response-placeholder {
+            font-family: 'Courier New', Courier, monospace;
+            color: #0f0f0e;
+            background-color: #f9f2f2;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .declaration {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #eef7ff;
+            border-left: 5px solid #005a9c;
+        }
+
+        .declaration p {
+            margin: 0;
+            font-style: italic;
+        }
+
+        .signature-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .signature-line {
+            display: inline-block;
+            border-top: 2px solid #333;
+            width: 425px;
+            padding-top: 5px;
+            font-weight: bold;
+        }
+
+        .signature-line-name {
+            display: inline-block;
+            width: 425px;
+            padding-top: 5px;
+            font-weight: bold;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+      <img src="assets/images/lot_name-rbg-2.png" alt="">
+        <h1>Formulario: Conoce a tu Cliente - Persona Natural</h1>
+
+        <section>
+            <h2>1. Información Personal</h2>
+            <div class="form-group">
+                <label>Nombre completo:</label>
+                <span class="response-placeholder">{{.NombreCompleto}}</span>
+            </div>
+            <div class="form-group">
+                <label>Tipo de documento de identificación:</label>
+                <span class="response-placeholder">{{.TipoDocumento}}</span>
+            </div>
+            <div class="form-group">
+                <label>Número de documento de identificación:</label>
+                <span class="response-placeholder">{{.NumeroDocumento}}</span>
+            </div>
+            <div class="form-group">
+                <label>Fecha de nacimiento:</label>
+                <span class="response-placeholder">{{.FechaNacimiento}}</span>
+            </div>
+            <div class="form-group">
+                <label>Género:</label>
+                <span class="response-placeholder">{{.Genero}}</span>
+            </div>
+            <div class="form-group">
+                <label>Profesión (según DUI):</label>
+                <span class="response-placeholder">{{.OcupacionProfesionDUI}}</span>
+            </div>
+            <div class="form-group">
+                <label>Estado civil:</label>
+                <span class="response-placeholder">{{.EstadoCivil}}</span>
+            </div>
+            <div class="form-group">
+                <label>Nacionalidad:</label>
+                <span class="response-placeholder">{{.Nacionalidad}}</span>
+            </div>
+            <div class="form-group">
+                <label>Dirección de residencia:</label>
+                <span class="response-placeholder">{{.DireccionResidencia}}</span>
+            </div>
+            <div class="form-group">
+                <label>Ciudad:</label>
+                <span class="response-placeholder">{{.Ciudad}}</span>
+            </div>
+            <div class="form-group">
+                <label>Código postal:</label>
+                <span class="response-placeholder">{{.CodigoPostal}}</span>
+            </div>
+            <div class="form-group">
+                <label>Teléfono de contacto:</label>
+                <span class="response-placeholder">{{.TelefonoContacto}}</span>
+            </div>
+            <div class="form-group">
+                <label>Correo electrónico:</label>
+                <span class="response-placeholder">{{.CorreoElectronico}}</span>
+            </div>
+        </section>
+        <div class="page-break"></div>
+        <section>
+            <h2>2. Información de trabajo</h2>
+            <div class="form-group">
+                <label>Ocupación/Profesión:</label>
+                <span class="response-placeholder">{{.OcupacionProfesion}}</span>
+            </div>
+            <div class="form-group">
+                <label>Nombre de la empresa/empleador:</label>
+                <span class="response-placeholder">{{.NombreEmpresa}}</span>
+            </div>
+            <div class="form-group">
+                <label>Cargo o puesto:</label>
+                <span class="response-placeholder">{{.CargoPuesto}}</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Información Financiera</h2>
+            <div class="form-group">
+                <label>Fuente de ingresos:</label>
+                <span class="response-placeholder">{{.FuenteIngresos}}</span>
+            </div>
+            <div class="form-group">
+                <label>Rango estimado de ingresos mensuales:</label>
+                <span class="response-placeholder">{{.RangoIngresosMensuales}}</span>
+            </div>
+            <div class="form-group">
+                <label>Propósito principal de la relación con la institución financiera:</label>
+                <span class="response-placeholder">{{.PropositoRelacion}}</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Declaración de Personas Expuestas Políticamente (PEP)</h2>
+            <div class="form-group">
+                <label>¿Es usted o algún familiar cercano una figura pública u ocupa algún cargo político?</label>
+                <span class="response-placeholder">{{.EsPEP}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre completo del familiar pep:</label>
+                <span class="response-placeholder">{{.FullNamePep}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>La position que desempeña:</label>
+                <span class="response-placeholder">{{.TitlePep}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>Relación que tiene con la persona pep:</label>
+                <span class="response-placeholder">{{.RelationshipPep}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>Detalles extras:</label>
+                <span class="response-placeholder">{{.DetallesPEP}}</span>
+            </div>
+        </section>
+
+      <div class="page-break"></div>
+
+        <section>
+            <h2>5. Autorización y Consentimiento</h2>
+            <div class="declaration">
+                <p>Declaro bajo juramento que la información proporcionada en este formulario es correcta, completa y veraz.</p>
+                <p>Entiendo que mis datos serán utilizados para fines de identificación y verificación conforme a las normativas vigentes en materia de bienes inmuebles.</p>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div class="signature-section">
+                <div class="signature-line">
+                </div>
+                <div class="signature-line-name">
+                    Firma: <span class="response-placeholder">{{.Firma}}</span>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

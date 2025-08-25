@@ -67,24 +67,25 @@ func (p *PromissoryNotePDF) buildPagareData(financing *model.FinancingDomain) (p
 
 	// Construir estructura de datos
 	data = pdf.PagareData{
-		NoteCode:              fmt.Sprintf("%09d", financing.ID),
-		ClientName:            fmt.Sprintf("%s %s", financing.Customer.Names, financing.Customer.LastNames),
-		IdentityDocument:      identityDoc,
-		ClientAge:             age,
-		Area:                  fmt.Sprintf("%.0f", financing.Lot.Area),
-		LotNumber:             financing.Lot.Number,
-		Address:               financing.Customer.ResidentialAddress,
-		Block:                 financing.Lot.Polygon,
-		TermInYears:           *financing.TotalTerm / 12,
-		InstallmentCount:      *financing.TotalTerm,
-		DateNow:               time.Now().Format(displayDateFormat),
-		InterestRate:          fmt.Sprintf("%.2f", *financing.InterestRate),
-		AmountToFinance:       formatAmount(*financing.FinancingAmount),
-		InstallmentAmount:     formatAmount(*financing.MonthlyPayment),
-		DownPaymentPercentage: fmt.Sprintf("%.2f", *financing.DownPaymentRate),
-		InterestOnArrears:     fmt.Sprintf("%.2f", financing.Lot.Development.InterestOnArrears),
-		LotCost:               formatAmount(financing.Amount),
-		Profession:            financing.Customer.Financial.Occupation,
+		NoteCode:                  fmt.Sprintf("%09d", financing.ID),
+		ClientName:                fmt.Sprintf("%s %s", financing.Customer.Names, financing.Customer.LastNames),
+		IdentityDocument:          identityDoc,
+		ClientAge:                 age,
+		Area:                      fmt.Sprintf("%.0f", financing.Lot.Area),
+		LotNumber:                 financing.Lot.Number,
+		Address:                   financing.Customer.ResidentialAddress,
+		Block:                     financing.Lot.Polygon,
+		TermInYears:               *financing.TotalTerm / 12,
+		InstallmentCount:          *financing.TotalTerm,
+		DateNow:                   time.Now().Format(displayDateFormat),
+		InterestRate:              fmt.Sprintf("%.2f", *financing.InterestRate),
+		AmountToFinance:           formatAmount(*financing.FinancingAmount),
+		InstallmentAmount:         formatAmount(*financing.MonthlyPayment),
+		DownPaymentPercentage:     fmt.Sprintf("%.2f", valueNull(financing.DownPaymentRate)),
+		FinancingAmountPercentage: fmt.Sprintf("%2.f", 100-valueNull(financing.DownPaymentRate)),
+		InterestOnArrears:         fmt.Sprintf("%.2f", financing.Lot.Development.InterestOnArrears),
+		LotCost:                   formatAmount(financing.Amount),
+		Profession:                financing.Customer.Financial.Occupation,
 	}
 
 	// Manejar pago inicial
@@ -199,4 +200,11 @@ func NewPromissoryNotePDF(env *config.Env) port.PromissoryNoteService {
 		generatePagarePDF: pagarePDF,
 		numberConverter:   numeroaletras.NewNumeroALetras(),
 	}
+}
+
+func valueNull(value *float64) float64 {
+	if value != nil {
+		return *value
+	}
+	return 0.00
 }

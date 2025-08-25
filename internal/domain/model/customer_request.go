@@ -22,4 +22,8 @@ type RequestCustomerOnboarding struct {
 	RangeIncome          string `json:"rangeIncome"`
 	RelationFinancial    string `json:"relationFinancial"`
 	SourceOfIncome       string `json:"sourceOfIncome"`
+	FullName             string `json:"fullName"`
+	Title                string `json:"title"`
+	Relationship         string `json:"relationship"`
+	ProfessionDUI        string `json:"professionDUI"`
 }

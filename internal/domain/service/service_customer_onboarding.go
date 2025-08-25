@@ -44,22 +44,35 @@ func (c customerOnboardingService) CreateCustomer(jwt, user, lang string, custom
 		customerPep.Pep = true
 		customerPep.Details = &customerOnboarding.DetailsPep
 	}
+	if customerOnboarding.FullName != "" {
+		customerPep.Pep = true
+		customerPep.FullName = &customerOnboarding.FullName
+	}
+	if customerOnboarding.Title != "" {
+		customerPep.Pep = true
+		customerPep.Title = &customerOnboarding.Title
+	}
+	if customerOnboarding.Relationship != "" {
+		customerPep.Pep = true
+		customerPep.Relationship = &customerOnboarding.Relationship
+	}
 
 	domain := modelApi.CustomerDomain{
 		Names:              customerOnboarding.Names,
 		LastNames:          customerOnboarding.Lastnames,
-		Nationality:        customerOnboarding.Nationality,
+		Nationality:        &customerOnboarding.Nationality,
 		Document:           document,
-		Gender:             modelApi.GenderDomain{Gender: customerOnboarding.Gender},
-		CivilStatus:        modelApi.CivilStatusDomain{CivilStatus: customerOnboarding.MaritalStatus},
+		Gender:             &modelApi.GenderDomain{Gender: customerOnboarding.Gender},
+		CivilStatus:        &modelApi.CivilStatusDomain{CivilStatus: customerOnboarding.MaritalStatus},
 		ResidentialAddress: customerOnboarding.Address,
 		Birthday:           customerOnboarding.BirthDate,
-		City:               customerOnboarding.City,
-		Email:              customerOnboarding.Email,
+		City:               &customerOnboarding.City,
+		Email:              &customerOnboarding.Email,
 		PhoneNumber:        customerOnboarding.Phone,
-		Pep:                customerPep,
-		ZipCode:            customerOnboarding.PostalCode,
-		Financial: modelApi.FinancialDomain{
+		Pep:                &customerPep,
+		ZipCode:            &customerOnboarding.PostalCode,
+		Profession:         &customerOnboarding.ProfessionDUI,
+		Financial: &modelApi.FinancialDomain{
 			Position:             customerOnboarding.Position,
 			EmployerName:         customerOnboarding.Employer,
 			EstimatedIncomeRange: customerOnboarding.RangeIncome,

@@ -1,10 +1,7 @@
 package pdf
 
 import (
-	"bytes"
-	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
-	"html/template"
-	"log"
+	"be-lotsanmateo-api/internal/adapter/report/pdf/utility"
 )
 
 type GeneratePagarePDF struct{}
@@ -37,6 +34,8 @@ type PagareData struct {
 	IdentityDocument string
 
 	DateNow string
+
+	FinancingAmountPercentage string
 
 	// {{monto costo del lote financiado}}
 	LotCost string
@@ -77,50 +76,17 @@ type PagareData struct {
 }
 
 func (p GeneratePagarePDF) GenerateReport(data PagareData) ([]byte, error) {
-	// Cargar la plantilla
-	tpl, err := template.ParseFiles("docs/pagare.gohtml")
+	tpl, err := utility.LoadTemplate("docs/pagare.gohtml")
 	if err != nil {
-		log.Println(err.Error())
 		return nil, err
 	}
 
-	// Ejecutar plantilla con datos
-	var htmlBuffer bytes.Buffer
-	if err := tpl.Execute(&htmlBuffer, data); err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
-
-	// Generar PDF
-	pdfg, err := wkhtmltopdf.NewPDFGenerator()
+	html, err := utility.ExecuteTemplateToHTML(tpl, data)
 	if err != nil {
-		log.Println(err.Error())
 		return nil, err
 	}
 
-	pdfg.MarginTop.Set(20)
-	pdfg.MarginBottom.Set(20)
-	pdfg.MarginLeft.Set(20)
-	pdfg.MarginRight.Set(20)
-
-	pdfg.Dpi.Set(720)
-	pdfg.NoCollate.Set(false)
-	pdfg.PageSize.Set(wkhtmltopdf.PageSizeLetter)
-
-	page := wkhtmltopdf.NewPageReader(bytes.NewReader(htmlBuffer.Bytes()))
-	page.EnableLocalFileAccess.Set(true)
-	page.FooterLine.Set(true)
-	page.FooterRight.Set("[page]")
-	page.FooterFontSize.Set(24)
-
-	pdfg.AddPage(page)
-
-	if err := pdfg.Create(); err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
-
-	return pdfg.Bytes(), nil
+	return utility.GeneratePDFFromHTML(html, utility.NewMarginDefault())
 }
 
 func NewGeneratePagarePDF() GeneratePagarePDF {
