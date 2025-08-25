@@ -15,6 +15,7 @@ type ConoceTuCliente struct {
 	CodigoPostal           string
 	TelefonoContacto       string
 	CorreoElectronico      string
+	OcupacionProfesionDUI  string
 	OcupacionProfesion     string
 	NombreEmpresa          string
 	CargoPuesto            string
@@ -23,6 +24,9 @@ type ConoceTuCliente struct {
 	PropositoRelacion      string
 	EsPEP                  string
 	DetallesPEP            string
+	FullNamePep            string
+	TitlePep               string
+	RelationshipPep        string
 	Firma                  string
 }
 
