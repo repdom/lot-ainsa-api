@@ -47,6 +47,8 @@ func NewRouter(env *config.Env) *gin.Engine {
 	paymentPlanPdf := pkg.NewCalculatePlanPdfHandler(env)
 	promissoryNoteHandler := pkg.NewPromissoryNoteHandler(env)
 	invoiceHandler := pkg.NewInvoiceHandler(env)
+	knowYourCustomer := pkg.NewKnowYourCustomerHandler(env)
+	financingRequest := pkg.NewFinancingRequestHandler(env)
 
 	pdfReport := r.Group("/pdf")
 	{
@@ -55,6 +57,8 @@ func NewRouter(env *config.Env) *gin.Engine {
 		pdfReport.GET("/invoice/payment", invoiceHandler.GeneratePayment)
 		pdfReport.GET("/invoice/down/payment", invoiceHandler.GenerateDownPayment)
 		pdfReport.GET("/invoice/reservation", invoiceHandler.GenerateReservation)
+		pdfReport.GET("/know-your-customer", knowYourCustomer.GeneratePDF)
+		pdfReport.GET("/financing/request", financingRequest.GeneratePDF)
 	}
 
 	return r
