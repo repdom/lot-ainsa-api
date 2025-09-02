@@ -9,11 +9,31 @@ func NewFinancingRequestPDF() *FinancingRequestPDF {
 	return &FinancingRequestPDF{}
 }
 
-type SolicitudFinanciamiento struct{}
+type SolicitudFinanciamiento struct {
+	Fecha                       string
+	Ciudad                      string
+	Departamento                string
+	NombreUrbanizacion          string
+	NombreDestinatario          string
+	PorcentajeFinanciamiento    string
+	PorcentajeFinanciamientoTxt string
+	MontoFinanciamiento         string
+	Plazo                       string
+	NombreCompleto              string
+	NumeroDUI                   string
+	DireccionCompleta           string
+	ActividadEconomica          string
+	NumeroLote                  string
+	Poligono                    string
+	PrecioLote                  string
+	AbonoEfectivo               string
+	Telefono                    string
+	CorreoElectronico           string
+}
 
 func (p FinancingRequestPDF) GenerateReport(data SolicitudFinanciamiento) ([]byte, error) {
 
-	tpl, err := utility.LoadTemplate("docs/conoceTuCliente.gohtml")
+	tpl, err := utility.LoadTemplate("docs/solicitud.gohtml")
 	if err != nil {
 		return nil, err
 	}
