@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Financiamiento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 40px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header, .recipient, .footer {
+            margin-bottom: 25px;
+        }
+
+        .header {
+            text-align: right;
+        }
+
+        .subject {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            margin-bottom: 15px;
+        }
+
+        .data-section {
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        .data-section p {
+            margin: 5px 0;
+        }
+
+        .attachments {
+            margin-top: 25px;
+        }
+
+        ul {
+            list-style-type: '• ';
+            padding-left: 20px;
+        }
+
+        .signature {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <p>{{.Fecha}}</p>
+        <p>{{.Ciudad}}, {{.Departamento}}</p>
+    </div>
+
+    <div class="recipient">
+        <p>Srs.<br>
+            {{.NombreUrbanizacion}}<br>
+            ({{.NombreDestinatario}})</p>
+    </div>
+
+    <p class="subject">Asunto: Solicitud de financiamiento del {{.PorcentajeFinanciamiento}}% para compra de Lote.</p>
+
+    <p>Estimados</p>
+
+    <div class="content">
+        <p>
+            Me dirijo a ustedes con el fin de solicitar un financiamiento del {{.PorcentajeFinanciamientoTxt}}% del
+            precio total del inmueble (por el valor de) ${{.MontoFinanciamiento}}.
+        </p>
+        <p>
+            Para un plazo de {{.Plazo}}.
+        </p>
+    </div>
+
+    <div class="data-section">
+        <p><strong>Mi nombre es:</strong> {{.NombreCompleto}}</p>
+        <p><strong>Con DUI No.</strong> {{.NumeroDUI}}</p>
+        <p><strong>Dirección completa:</strong> {{.DireccionCompleta}}</p>
+        <p><strong>Actividad Económica:</strong> {{.ActividadEconomica}}</p>
+        <p><strong>Lote N°:</strong> {{.NumeroLote}} <strong>Polígono:</strong> {{.Poligono}}</p>
+        <p><strong>Precio del lote asciende a:</strong> ${{.PrecioLote}}</p>
+        <p><strong>Abone la Cantidad en efectivo de:</strong> ${{.AbonoEfectivo}}</p>
+    </div>
+
+    <div class="attachments">
+        <p>Adjunto a esta solicitud los documentos requeridos, como:</p>
+        <ul>
+            <li>Copia de DUI</li>
+            <li>Copia de Recibo de Luz o Agua</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>Para cualquier consulta adicional, pueden contactarme al teléfono: {{.Telefono}}, o al correo
+            electrónico: {{.CorreoElectronico}}</p>
+    </div>
+
+    <div class="signature">
+        <p>___________________________________</p>
+        <p>Firma.</p>
+    </div>
+</div>
+</body>
+</html>

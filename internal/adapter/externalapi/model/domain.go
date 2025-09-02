@@ -120,6 +120,7 @@ type LotDomain struct {
 type DevelopmentDomain struct {
 	ID                int         `json:"id"`
 	OwnerName         string      `json:"ownerName"`
+	Name              string      `json:"name"`
 	Location          string      `json:"location"`
 	Description       string      `json:"description"`
 	Status            string      `json:"status"`
