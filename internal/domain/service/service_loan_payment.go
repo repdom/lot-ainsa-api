@@ -79,7 +79,7 @@ func (s ServiceLoanPayment) CalculateLoanPayment(jwt, user, lang string, financi
 	if lastBalance < 0 {
 		capital += lastBalance
 		shareAmount = capital + interest + interestOnArrearsAmount
-		lastBalance := amount - capital
+		lastBalance = amount - capital
 		if lastBalance < 0 {
 			log.Print("Warning: balance is negative, using interest as capital")
 			lastBalance = 0
