@@ -29,6 +29,15 @@ func (s FinancingRequestService) GenerateReport(jwt, user, lang string, financin
 	porT, _ := s.numberConverter.ToWords(por, 2)
 	now := time.Now()
 
+	// Determinar el abono en efectivo mostrado en la carta de solicitud.
+	// Priorizar el monto de la reserva si existe; en su defecto, usar el saldo de prima.
+	abonoEfectivo := 0.0
+	if load.Reservation != nil {
+		abonoEfectivo = load.Reservation.Amount
+	} else {
+		abonoEfectivo = validDataFloat(load.DownPaymentBalance)
+	}
+
 	data := pdf.SolicitudFinanciamiento{
 		NombreCompleto:              fullName,
 		CorreoElectronico:           validData(load.Customer.Email),
@@ -44,7 +53,7 @@ func (s FinancingRequestService) GenerateReport(jwt, user, lang string, financin
 		NumeroLote:                  load.Lot.Number,
 		Poligono:                    load.Lot.Polygon,
 		PrecioLote:                  fmt.Sprintf("%.2f", load.Lot.Price),
-		AbonoEfectivo:               fmt.Sprintf("%.2f", validDataFloat(load.DownPaymentBalance)),
+		AbonoEfectivo:               fmt.Sprintf("%.2f", abonoEfectivo),
 		Plazo:                       fmt.Sprintf("%d", load.TermElapsed),
 		ActividadEconomica:          load.Customer.Financial.Occupation,
 		Fecha:                       now.Format(dateFormat),
