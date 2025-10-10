@@ -171,7 +171,7 @@ func (s ServiceInvoice) InvoiceReservation(jwt, user, lang, name string, reserva
 		InteresesMoratorios:     "0.00",
 		InteresesNormales:       "0.00",
 		SaldoAnterior:           "0.00",
-		SaldoActual:             fmt.Sprintf("%.2f", loadReservation.Amount),
+		SaldoActual:             fmt.Sprintf("%.2f", loadReservation.Lot.Price-loadReservation.Amount),
 	}
 
 	var pdfData []byte
