@@ -7,3 +7,14 @@ services:
       - "8081:8081"
     environment:
       - PORT=8081
+      - KEYCLOAK_URL=http://lot-sanmateo-keycloak:8080/realms/lot-sanmateo
+      - KEYCLOAK_CLIENT_ID=lot-sanmateo-client
+      - CUSTOMER_API_URL=http://host.docker.internal:8080/
+      - KEYCLOAK_REQUIRED_ROLE=
+    networks:
+      - sanmateo-network
+
+networks:
+  sanmateo-network:
+    external: true
+    name: be-lotsanmateo_sanmateo-network

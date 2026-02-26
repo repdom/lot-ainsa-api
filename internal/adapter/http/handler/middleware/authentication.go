@@ -77,12 +77,12 @@ func (config KeycloakConfig) AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Verificar rol requerido si está configurado
-		if config.RequiredRole != nil && !hasRequiredRole(claims, config) {
-			c.JSON(http.StatusForbidden, gin.H{"error": "Rol insuficiente"})
-			c.Abort()
-			return
-		}
+		//// Verificar rol requerido si está configurado
+		//if len(config.RequiredRole) > 0 && !hasRequiredRole(claims, config) {
+		//	c.JSON(http.StatusForbidden, gin.H{"error": "Rol insuficiente"})
+		//	c.Abort()
+		//	return
+		//}
 
 		// Añadir claims al contexto
 		c.Set("user_claims", claims)

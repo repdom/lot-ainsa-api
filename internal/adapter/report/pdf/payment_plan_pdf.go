@@ -148,7 +148,7 @@ func (p PaymentPlanPDF) GeneratePDF(payment PaymentPlan) ([]byte, error) {
 	})
 
 	addAttribute(m, Attribute{
-		"DUI", payment.DUI, "Plazo en años:", strconv.FormatFloat(payment.Loan.Years, 'f', 0, 64),
+		"CED", payment.DUI, "Plazo en años:", strconv.FormatFloat(payment.Loan.Years, 'f', 0, 64),
 	}, props.Text{
 		Align: align.Left,
 	}, props.Text{
