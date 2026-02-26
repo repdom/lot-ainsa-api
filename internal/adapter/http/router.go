@@ -34,6 +34,36 @@ func NewRouter(env *config.Env) *gin.Engine {
 	loanPaymentHandler := pkg.NewLoanPaymentHandler(env)
 	activeFinancing := pkg.NewFinancingHandler(env)
 
+	paymentPlanPdf := pkg.NewCalculatePlanPdfHandler(env)
+	promissoryNoteHandler := pkg.NewPromissoryNoteHandler(env)
+	invoiceHandler := pkg.NewInvoiceHandler(env)
+	knowYourCustomer := pkg.NewKnowYourCustomerHandler(env)
+	financingRequest := pkg.NewFinancingRequestHandler(env)
+
+	complexApi := r.Group("/complex-api")
+	{
+		apiRest := complexApi.Group("/api")
+		{
+			apiRest.GET("/test", test.TestHandler)
+			apiRest.POST("/payment/plan/simulation", paymentPlan.HandleRequest)
+			apiRest.POST("/v1/loan", customer.CreateCustomer)
+			apiRest.GET("/v1/loan/payment", loanPaymentHandler.HandleRequest)
+			apiRest.POST("/v1/customer-onboarding", customer.CreateCustomer)
+			apiRest.POST("/v1/financing/active", activeFinancing.HandleRequest)
+		}
+
+		pdfReport := complexApi.Group("/pdf")
+		{
+			pdfReport.GET("/payment/plan/simulation", paymentPlanPdf.GeneratePDF)
+			pdfReport.GET("/promissory/note", promissoryNoteHandler.GeneratePDF)
+			pdfReport.GET("/invoice/payment", invoiceHandler.GeneratePayment)
+			pdfReport.GET("/invoice/down/payment", invoiceHandler.GenerateDownPayment)
+			pdfReport.GET("/invoice/reservation", invoiceHandler.GenerateReservation)
+			pdfReport.GET("/know-your-customer", knowYourCustomer.GeneratePDF)
+			pdfReport.GET("/financing/request", financingRequest.GeneratePDF)
+		}
+	}
+
 	apiRest := r.Group("/api")
 	{
 		apiRest.GET("/test", test.TestHandler)
@@ -43,12 +73,6 @@ func NewRouter(env *config.Env) *gin.Engine {
 		apiRest.POST("/v1/customer-onboarding", customer.CreateCustomer)
 		apiRest.POST("/v1/financing/active", activeFinancing.HandleRequest)
 	}
-
-	paymentPlanPdf := pkg.NewCalculatePlanPdfHandler(env)
-	promissoryNoteHandler := pkg.NewPromissoryNoteHandler(env)
-	invoiceHandler := pkg.NewInvoiceHandler(env)
-	knowYourCustomer := pkg.NewKnowYourCustomerHandler(env)
-	financingRequest := pkg.NewFinancingRequestHandler(env)
 
 	pdfReport := r.Group("/pdf")
 	{
