@@ -7,6 +7,11 @@ import (
 type InvoicePagarePDF struct{}
 
 type ReciboPagoData struct {
+	EmpresaNombre           string
+	EmpresaDireccion        string
+	EmpresaTelefono         string
+	EmpresaEmail            string
+	FechaEmision            string
 	CantidadPagadaEnNumeros string
 	LugarYFecha             string
 	RecibiDe                string

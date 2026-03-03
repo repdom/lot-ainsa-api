@@ -3,58 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recibo de Ingreso SMU-00115</title>
+    <title>Recibo de Pago - {{.EmpresaNombre}}</title>
     <style>
         body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            color: #333;
+            line-height: 1.5;
+            background-color: #fff;
         }
 
-        .pagina {
-            width: 21.59cm;
-            height: 27.94cm;
-            position: relative;
+        .invoice-container {
+            width: 19cm;
+            margin: auto;
+            padding: 1cm;
         }
 
-        .campo {
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid #1a252f;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .company-info {
+            width: 60%;
+        }
+
+        .company-info h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #1a252f;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .company-info p {
+            margin: 3px 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .invoice-details {
+            width: 35%;
+            text-align: right;
+        }
+
+        .invoice-details h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #1a252f;
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            display: inline-block;
+            border: 1px solid #dee2e6;
+        }
+
+        .invoice-details p {
+            margin: 5px 0;
+            font-size: 13px;
+        }
+
+        .section-title {
+            background-color: #1a252f;
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 12px;
+            border-radius: 2px;
+        }
+
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 8px 0;
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #555;
+            width: 150px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .info-value {
+            color: #000;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .amount-summary {
+            margin: 30px 0;
+            border: 2px solid #1a252f;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .amount-header {
+            background-color: #1a252f;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .amount-header span {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .amount-header .price {
+            font-size: 24px;
+        }
+
+        .amount-body {
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .amount-text {
+            font-style: italic;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .detail-table th {
+            background-color: #f8f9fa;
+            text-align: left;
+            padding: 10px;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 12px;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        .detail-table td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 13px;
+        }
+
+        .footer {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .signature-box {
+            text-align: center;
+            width: 200px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-bottom: 8px;
+        }
+
+        .signature-label {
+            font-size: 11px;
+            color: #555;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .payment-info {
+            font-size: 11px;
+            color: #777;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        .watermark {
             position: absolute;
-            font-family: Arial, sans-serif;
-            font-size: 12pt;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(0, 0, 0, 0.02);
+            pointer-events: none;
+            z-index: -1;
             white-space: nowrap;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
+    <div class="invoice-container">
+        <div class="watermark">{{.EmpresaNombre}}</div>
+        
+        <div class="header">
+            <div class="company-info">
+                <h1>{{.EmpresaNombre}}</h1>
+                <p>{{.EmpresaDireccion}}</p>
+                <p>Tel: {{.EmpresaTelefono}} | Email: {{.EmpresaEmail}}</p>
+            </div>
+            <div class="invoice-details">
+                <h2>RECIBO DE PAGO</h2>
+                <p><strong>Fecha:</strong> {{.FechaEmision}}</p>
+            </div>
+        </div>
 
-<div class="pagina">
-    <div class="campo" style="top: 3.50cm; left: 13.00cm;">{{.CantidadPagadaEnNumeros}}</div>
-    <div class="campo" style="top: 4.50cm; left: 4.50cm;">{{.LugarYFecha}}</div>
-    <div class="campo" style="top: 5.30cm; left: 4.50cm;">{{.RecibiDe}}</div>
-    <div class="campo" style="top: 6.35cm; left: 8.50cm;">{{.LaCantidadDe}}</div>
-    <div class="campo" style="top: 7.18cm; left: 3.87cm;">{{.Direccion}}</div>
-    <div class="campo" style="top: 7.18cm; left: 15.20cm;">{{.Dui}}</div>
-    <div class="campo" style="top: 7.18cm; left: 19.90cm;">{{.Nit}}</div>
-    <div class="campo" style="top: 8.62cm; left: 5.52cm;">{{.ConceptoDe}}</div>
-    <div class="campo" style="top: 8.55cm; left: 17.28cm;">{{.LoteN}}</div>
-    <div class="campo" style="top: 8.55cm; left: 24.74cm;">{{.UbicacionDePoligono}}</div>
-    <div class="campo" style="top: 11.76cm; left: 2.37cm;">{{.Efectivo}}</div>
-    <div class="campo" style="top: 9.84cm; left: 8.35cm;">{{.TransferenciaID}}</div>
-    <div class="campo" style="top: 9.60cm; left: 11.35cm;">{{.FechaTransferencia}}</div>
-    <div class="campo" style="top: 10.40cm; left: 8.91cm;">{{.BancoT}}</div>
-    <div class="campo" style="top: 10.92cm; left: 8.91cm;">{{.BancoR}}</div>
-    <div class="campo" style="top: 10.89cm; left: 11.70cm;">{{.Ctan}}</div>
-    <div class="campo" style="top: 9.90cm; left: 15.41cm;">{{.NumeroDeposito}}</div>
-    <div class="campo" style="top: 10.84cm; left: 15.80cm;">{{.DepositoBanco}}</div>
-    <div class="campo" style="top: 11.40cm; left: 3.78cm;">{{.RecibidoPor}}</div>
-    <div class="campo" style="top: 12.20cm; left: 2.13cm;">{{.Firma}}</div>
-    <div class="campo" style="top: 14.70cm; left: 5.50cm;">{{.ValorDelLote}}</div>
-    <div class="campo" style="top: 14.70cm; left: 9.16cm;">{{.SaldoAnterior}}</div>
-    <div class="campo" style="top: 14.70cm; left: 12.50cm;">{{.AbonoACapital}}</div>
-    <div class="campo" style="top: 14.70cm; left: 16.50cm;">{{.InteresesNormales}}</div>
-    <div class="campo" style="top: 14.70cm; left: 19.10cm;">{{.InteresesMoratorios}}</div>
-    <div class="campo" style="top: 14.70cm; left: 22.80cm;">{{.SaldoActual}}</div>
+        <table class="info-table">
+            <tr>
+                <td class="info-label">Recibido de:</td>
+                <td class="info-value" colspan="3">{{.RecibiDe}}</td>
+            </tr>
+            <tr>
+                <td class="info-label">DUI / NIT:</td>
+                <td class="info-value">{{if .Dui}}{{.Dui}}{{else}}{{.Nit}}{{end}}</td>
+                <td class="info-label" style="padding-left: 20px;">Teléfono:</td>
+                <td class="info-value">{{.EmpresaTelefono}}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Dirección:</td>
+                <td class="info-value" colspan="3">{{.Direccion}}</td>
+            </tr>
+        </table>
 
-</div>
+        <div class="section-title">Detalles del Inmueble</div>
+        <table class="info-table">
+            <tr>
+                <td class="info-label">Lote Número:</td>
+                <td class="info-value">{{.LoteN}}</td>
+                <td class="info-label" style="padding-left: 20px;">Polígono:</td>
+                <td class="info-value">{{.UbicacionDePoligono}}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Concepto:</td>
+                <td class="info-value" colspan="3">{{.ConceptoDe}}</td>
+            </tr>
+        </table>
 
+        <div class="section-title">Resumen Financiero</div>
+        <table class="detail-table">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th style="text-align: right;">Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{if .AbonoACapital}}
+                <tr>
+                    <td>Abono a Capital</td>
+                    <td style="text-align: right;">${{.AbonoACapital}}</td>
+                </tr>
+                {{end}}
+                {{if .InteresesNormales}}
+                <tr>
+                    <td>Intereses Normales</td>
+                    <td style="text-align: right;">${{.InteresesNormales}}</td>
+                </tr>
+                {{end}}
+                {{if .InteresesMoratorios}}
+                <tr>
+                    <td>Intereses Moratorios</td>
+                    <td style="text-align: right;">${{.InteresesMoratorios}}</td>
+                </tr>
+                {{end}}
+                <tr>
+                    <td style="font-weight: bold;">SALDO ANTERIOR</td>
+                    <td style="text-align: right;">${{.SaldoAnterior}}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; color: #c0392b;">SALDO ACTUAL</td>
+                    <td style="text-align: right; font-weight: bold; color: #c0392b;">${{.SaldoActual}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="amount-summary">
+            <div class="amount-header">
+                <span>TOTAL RECIBIDO</span>
+                <span class="price">${{.CantidadPagadaEnNumeros}}</span>
+            </div>
+            <div class="amount-body">
+                <div class="amount-text">SON: {{.LaCantidadDe}}</div>
+            </div>
+        </div>
+
+        <div class="payment-info">
+            <strong>FORMA DE PAGO:</strong> {{if .Efectivo}}EFECTIVO{{else}}TRANSFERENCIA / DEPÓSITO{{end}}
+            {{if .TransferenciaID}} | <strong>REF:</strong> {{.TransferenciaID}}{{end}}
+            {{if .BancoT}} | <strong>BANCO:</strong> {{.BancoT}}{{end}}
+        </div>
+
+        <div class="footer">
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <div class="signature-label">Firma del Cliente</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <div class="signature-label">Recibido Conforme</div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

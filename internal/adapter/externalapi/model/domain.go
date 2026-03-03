@@ -154,3 +154,15 @@ type DownPaymentDomain struct {
 	ReceiptNumber      *string            `json:"receiptNumber"`
 	ReferenceNumber    *string            `json:"referenceNumber,omitempty"`
 }
+
+type CompanyConfigurationDomain struct {
+	ID           int    `json:"id"`
+	RNC          string `json:"rnc"`
+	BusinessName string `json:"businessName"`
+	Email        string `json:"email"`
+	Address      string `json:"address"`
+	Phone        string `json:"phone"`
+	Mobile       string `json:"mobile"`
+	Whatsapp     string `json:"whatsapp"`
+	Active       bool   `json:"active"`
+}

@@ -32,8 +32,9 @@ func (p PaymentPlanPDF) GenerateReport(jwt, user, lang string, financingId int) 
 	log.Printf("Total term: %d", loadFinancing.TotalTerm)
 	if loadFinancing.TotalTerm == nil {
 		request.Months = 240
+	} else {
+		request.Months = *loadFinancing.TotalTerm
 	}
-	request.Months = *loadFinancing.TotalTerm
 	if loadFinancing.DownPaymentBalance != nil {
 		request.Premium = *loadFinancing.DownPaymentBalance
 	} else {
@@ -62,26 +63,27 @@ func (p PaymentPlanPDF) GenerateReport(jwt, user, lang string, financingId int) 
 		paymentPlan.StartDate = time.Now().Format("02/01/2006")
 	}
 
-	if loadFinancing.Customer.Document.DUI != nil {
-		paymentPlan.DUI = *loadFinancing.Customer.Document.DUI
+	var clientName string
+	if loadFinancing.Customer != nil {
+		if loadFinancing.Customer.Document.DUI != nil {
+			paymentPlan.DUI = *loadFinancing.Customer.Document.DUI
+		} else if loadFinancing.Customer.Document.NIT != nil {
+			paymentPlan.DUI = *loadFinancing.Customer.Document.NIT
+		} else if loadFinancing.Customer.Document.Passport != nil {
+			paymentPlan.DUI = *loadFinancing.Customer.Document.Passport
+		}
+
+		paymentPlan.FullName = loadFinancing.Customer.Names + " " + loadFinancing.Customer.LastNames
+		paymentPlan.Address = loadFinancing.Customer.ResidentialAddress
+		paymentPlan.Phone = loadFinancing.Customer.PhoneNumber
+		clientName = loadFinancing.Customer.Names + " " + loadFinancing.Customer.LastNames
 	}
 
-	if loadFinancing.Customer.Document.NIT != nil {
-		paymentPlan.DUI = *loadFinancing.Customer.Document.NIT
+	if loadFinancing.Lot != nil {
+		paymentPlan.Lote = loadFinancing.Lot.Number
+		paymentPlan.Polygon = loadFinancing.Lot.Polygon
+		paymentPlan.Area = loadFinancing.Lot.Area
 	}
-
-	if loadFinancing.Customer.Document.Passport != nil {
-		paymentPlan.DUI = *loadFinancing.Customer.Document.Passport
-	}
-
-	paymentPlan.FullName = loadFinancing.Customer.Names + " " + loadFinancing.Customer.LastNames
-	paymentPlan.Address = loadFinancing.Customer.ResidentialAddress
-	paymentPlan.Phone = loadFinancing.Customer.PhoneNumber
-	paymentPlan.Lote = loadFinancing.Lot.Number
-	paymentPlan.Polygon = loadFinancing.Lot.Polygon
-	paymentPlan.Area = loadFinancing.Lot.Area
-
-	clientName := loadFinancing.Customer.Names + " " + loadFinancing.Customer.LastNames
 
 	var pdfData []byte
 	pdfData, fail := paymentPDF.GeneratePDF(paymentPlan)

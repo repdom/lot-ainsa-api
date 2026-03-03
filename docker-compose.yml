@@ -11,8 +11,6 @@ services:
       - KEYCLOAK_CLIENT_ID=lot-sanmateo-client
       - CUSTOMER_API_URL=http://host.docker.internal:8080/
       - KEYCLOAK_REQUIRED_ROLE=
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     networks:
       - sanmateo-network
 
